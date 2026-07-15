@@ -6,13 +6,21 @@ spring:
     error:
       include-message: always
       include-binding-errors: always
+  servlet:
+    multipart:
+      # Domyślny 1MB odrzucałby zdjęcia wielkości własnych seedów (turkey.gif ~1.1MB).
+      max-file-size: 10MB
+      max-request-size: 15MB
   datasource:
     url: jdbc:postgresql://${HOST}:${DB_PORT}/shop
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-  liquibase:
-    change-log: classpath:liquibase-changelog.xml
+  flyway:
+    enabled: true
+    # Bez baseline-on-migrate: V1 tworzy cały schemat, więc na niepustej bazie
+    # bez historii Flyway ma głośno failować, a nie po cichu pomijać V1.
+    locations: classpath:db/migration
   jpa:
     show-sql: false
   data:
@@ -44,7 +52,6 @@ jwt:
   secret: ${JWT_SECRET}
 
 app:
-  uploadDir: /data/productImages/
   serviceAddress: https://shop.dudios.pl
 
 management:

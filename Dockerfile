@@ -23,7 +23,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/app/backend/build/libs/*.jar /opt/app/app.jar
-COPY --from=builder /opt/app/backend/data /opt/app/data
 EXPOSE 8082
 
 HEALTHCHECK --interval=5s --timeout=3s --start-period=60s --retries=3 \

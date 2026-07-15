@@ -1,10 +1,10 @@
 package pl.dudios.shopmvn.admin.product.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.CacheControl;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,12 +21,12 @@ import pl.dudios.shopmvn.admin.product.model.dto.AdminProductDto;
 import pl.dudios.shopmvn.admin.product.model.dto.UploadResponse;
 import pl.dudios.shopmvn.admin.product.service.AdminProductImageService;
 import pl.dudios.shopmvn.admin.product.service.AdminProductService;
+import pl.dudios.shopmvn.common.model.ProductImage;
 
 import jakarta.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Optional;
 
 import static pl.dudios.shopmvn.admin.common.utils.SlugifyUtils.slugifySlug;
@@ -88,16 +88,15 @@ public class AdminProductController {
 
     }
 
-    @GetMapping("/data/productImage/{fileName}")
-    public ResponseEntity<Resource> serveFiles(@PathVariable String fileName) {
-        Resource file = adminProductImageService.serveFiles(fileName);
-        try {
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(Path.of(fileName)))
-                    .body(file);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @GetMapping({"/data/productImage/{fileName}", "/data/productImages/{fileName}"})
+    public ResponseEntity<byte[]> serveFiles(@PathVariable String fileName) {
+        ProductImage image = adminProductImageService.getImage(fileName);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(image.getContentType()))
+                // Kolizje nazw dostają sufiks "-N", więc treść pod daną nazwą
+                // się nie zmienia — można cache'ować agresywnie.
+                .cacheControl(CacheControl.maxAge(Duration.ofDays(30)).cachePublic().immutable())
+                .body(image.getData());
     }
 
     private AdminProduct mapToAdminProduct(AdminProductDto adminProductDto, Long id) {

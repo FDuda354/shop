@@ -31,7 +31,8 @@ dependencies {
 
     // DB
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-liquibase")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
+    implementation("org.flywaydb:flyway-database-postgresql")
     runtimeOnly("org.postgresql:postgresql")
 
     // Security + JWT
@@ -55,6 +56,11 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
+    // Boot 4 wydzielił TestRestTemplate do osobnego modułu; potrzebuje on
+    // spring-boot-restclient (RestTemplateBuilder) w runtime testów.
+    testImplementation("org.springframework.boot:spring-boot-resttestclient")
+    testImplementation("org.springframework.boot:spring-boot-restclient")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation(platform("org.testcontainers:testcontainers-bom:2.0.5"))
@@ -72,6 +78,9 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
     filter {
         excludeTestsMatching("*IntegrationTest")
+        // Klasy @Nested w testach integracyjnych nazywają się Outer$Inner —
+        // sam wzorzec "*IntegrationTest" ich nie łapie.
+        excludeTestsMatching("*IntegrationTest$*")
         isFailOnNoMatchingTests = false
     }
 }
@@ -83,6 +92,7 @@ tasks.register<Test>("integrationTest") {
     classpath = sourceSets["test"].runtimeClasspath
     filter {
         includeTestsMatching("*IntegrationTest")
+        includeTestsMatching("*IntegrationTest$*")
         isFailOnNoMatchingTests = false
     }
     shouldRunAfter(tasks.named("test"))

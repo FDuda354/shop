@@ -2,27 +2,24 @@ package pl.dudios.shopmvn.admin.product.service;
 
 import org.apache.commons.io.FilenameUtils;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.function.Predicate;
 
 class ExistingFileRenameUtils {
 
     private ExistingFileRenameUtils() {
     }
 
-    public static String renameFileIfExists(Path uploadDir, String fileName) {
-        if (Files.exists(uploadDir.resolve(fileName))) {
-            return renameAndCheck(uploadDir, fileName);
+    /**
+     * Dokleja (lub inkrementuje) sufiks "-N" tak długo, aż nazwa przestanie
+     * kolidować z już istniejącą — kolizje zgłasza przekazany predykat,
+     * więc logika nie zależy od tego, gdzie obrazy faktycznie leżą.
+     */
+    public static String renameFileIfExists(Predicate<String> nameExists, String fileName) {
+        String candidate = fileName;
+        while (nameExists.test(candidate)) {
+            candidate = renameFileName(candidate);
         }
-        return fileName;
-    }
-
-    private static String renameAndCheck(Path uploadDir, String fileName) {
-        String newName = renameFileName(fileName);
-        if (Files.exists(uploadDir.resolve(newName))) {
-            newName = renameAndCheck(uploadDir, newName);
-        }
-        return newName;
+        return candidate;
     }
 
     private static String renameFileName(String fileName) {

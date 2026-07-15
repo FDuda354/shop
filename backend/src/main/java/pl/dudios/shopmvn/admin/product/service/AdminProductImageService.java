@@ -1,39 +1,54 @@
 package pl.dudios.shopmvn.admin.product.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResourceLoader;
-import org.springframework.core.io.Resource;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import pl.dudios.shopmvn.admin.common.utils.SlugifyUtils;
+import pl.dudios.shopmvn.common.model.ProductImage;
+import pl.dudios.shopmvn.common.repository.ProductImageRepo;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
+@RequiredArgsConstructor
 public class AdminProductImageService {
 
-    @Value("${app.uploadDir}")
-    private String UPLOAD_DIR;
-     // private String UPLOAD_DIR = "./data/productImages/";
+    private final ProductImageRepo productImageRepo;
 
+    @Transactional
     public String uploadImage(String fileName, InputStream inputStream) {
         String newFileName = SlugifyUtils.slugifyFileName(fileName);
-        newFileName = ExistingFileRenameUtils.renameFileIfExists(Path.of("/opt/app"+UPLOAD_DIR), newFileName);
-        Path filePath = Paths.get("/opt/app"+UPLOAD_DIR).resolve(newFileName);
-        try (OutputStream outputStream = Files.newOutputStream(filePath)) {
-            inputStream.transferTo(outputStream);
+        newFileName = ExistingFileRenameUtils.renameFileIfExists(productImageRepo::existsByName, newFileName);
+
+        byte[] data;
+        try {
+            data = inputStream.readAllBytes();
         } catch (IOException e) {
             throw new RuntimeException("Cant save file", e);
         }
+
+        productImageRepo.save(ProductImage.builder()
+                .name(newFileName)
+                .contentType(contentTypeFor(newFileName))
+                .data(data)
+                .build());
         return newFileName;
     }
 
-    public Resource serveFiles(String fileName) {
-        FileSystemResourceLoader resourceLoader = new FileSystemResourceLoader();
-        return resourceLoader.getResource(UPLOAD_DIR + fileName);
+    @Transactional(readOnly = true)
+    public ProductImage getImage(String fileName) {
+        return productImageRepo.findByName(fileName)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found: " + fileName));
+    }
+
+    private static String contentTypeFor(String fileName) {
+        return MediaTypeFactory.getMediaType(fileName)
+                .orElse(MediaType.APPLICATION_OCTET_STREAM)
+                .toString();
     }
 }
