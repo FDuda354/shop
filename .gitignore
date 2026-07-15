@@ -1,0 +1,9 @@
+.gradle
+.idea
+/build/
+backend/build/
+frontend/dist/
+frontend/node_modules/
+frontend/.angular/
+*.iml
+/.claude/

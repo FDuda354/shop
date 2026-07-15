@@ -1,0 +1,74 @@
+server:
+  port: 8082
+
+spring:
+  web:
+    error:
+      include-message: always
+      include-binding-errors: always
+  datasource:
+    url: jdbc:postgresql://${HOST}:${DB_PORT}/shop
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    change-log: classpath:liquibase-changelog.xml
+  jpa:
+    show-sql: false
+  data:
+    web:
+      pageable:
+        default-page-size: 25
+        max-page-size: 100
+  mail:
+    host: ssl0.ovh.net
+    username: postmaster@dudios.pl
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          port: 587
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+logging:
+  level:
+    org.springframework.web: INFO
+
+jwt:
+  expirationTime: 2592000000
+  secret: ${JWT_SECRET}
+
+app:
+  uploadDir: /data/productImages/
+  serviceAddress: https://shop.dudios.pl
+
+management:
+  health:
+    mail:
+      # Health (i healthcheck Dockera) nie może zależeć od zewnętrznego SMTP —
+      # indicator poczty robi prawdziwy Transport.connect() przy każdym odpytaniu.
+      enabled: false
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,metrics,loggers
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: false
+    build:
+      enabled: true
+    java:
+      enabled: false
+    os:
+      enabled: false

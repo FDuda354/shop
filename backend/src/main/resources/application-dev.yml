@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    show-sql: true
+
+app:
+  serviceAddress: http://localhost:4200
+
+logging:
+  level:
+    org.springframework.web: DEBUG
