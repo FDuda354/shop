@@ -1,0 +1,103 @@
+<div class="flex flex-col gap-16 admin-order-details animation-fadeIn">
+  <ui-content-loader [data]="order" [contentTemplate]="content">
+    <ng-template #content let-order>
+      <div class="flex flex-col gap-16">
+        <div class="flex flex-row items-center gap-12 flex-wrap animation-slideInDown">
+          <p-button icon="pi pi-arrow-left" variant="text" severity="secondary" [ariaLabel]="'common.back' | translate" (onClick)="back()"></p-button>
+          <h2 class="admin-order-details__title">{{ 'admin.orderDetails.title' | translate:{id: order.id} }}</h2>
+          <p-tag [value]="'orderStatus.' + order.orderStatus | translate" [severity]="orderStatusSeverity(order.orderStatus)" [rounded]="true"></p-tag>
+          <span class="admin-order-details__date">{{ order.placeDate | date:'dd.MM.yyyy HH:mm' }}</span>
+
+          <div class="flex flex-row items-center gap-8 admin-order-details__status-change">
+            <p-select [options]="statusOptions()"
+                      optionLabel="label"
+                      optionValue="value"
+                      [placeholder]="'admin.orderDetails.changeStatusPlaceholder' | translate"
+                      styleClass="admin-order-details__status-select"
+                      [ngModel]="selectedStatus()"
+                      (ngModelChange)="selectedStatus.set($event)">
+            </p-select>
+            <p-button [label]="'admin.orderDetails.changeStatus' | translate"
+                      icon="pi pi-sync"
+                      [loading]="changingStatus()"
+                      [disabled]="selectedStatus() === order.orderStatus"
+                      (onClick)="changeStatus()"></p-button>
+          </div>
+        </div>
+
+        <div class="flex flex-row gap-16 items-start md-down:flex-col">
+          <div class="flex--60 flex flex-col gap-16 md-down:w-full">
+            <div class="admin-order-details__card flex flex-col gap-8">
+              <h3 class="admin-order-details__section-title">{{ 'admin.orderDetails.items' | translate }}</h3>
+              <p-table [value]="order.orderRows" dataKey="id">
+                <ng-template #header>
+                  <tr>
+                    <th></th>
+                    <th>{{ 'admin.orderDetails.productColumn' | translate }}</th>
+                    <th>{{ 'common.quantity' | translate }}</th>
+                    <th class="admin-order-details__value-col">{{ 'common.price' | translate }}</th>
+                  </tr>
+                </ng-template>
+                <ng-template #body let-row>
+                  <tr>
+                    <td style="width: 56px;">
+                      @if (row.product && imageUrl(row.product.image); as src) {
+                        <img [src]="src" [alt]="localizedName(row.product)" class="admin-order-details__thumb"/>
+                      } @else if (row.product) {
+                        <div class="image-placeholder admin-order-details__thumb">
+                          <i class="pi pi-image"></i>
+                        </div>
+                      } @else {
+                        <i class="pi pi-truck admin-order-details__shipment-icon"></i>
+                      }
+                    </td>
+                    <td>{{ row.product ? localizedName(row.product) : (row.shipment?.name ?? '—') }}</td>
+                    <td>{{ row.quantity }}</td>
+                    <td class="admin-order-details__value-col">{{ row.price | number:'1.2-2' }} PLN</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+              <div class="flex flex-row justify-end admin-order-details__total">
+                {{ 'common.total' | translate }}: {{ order.grossValue | number:'1.2-2' }} PLN
+              </div>
+            </div>
+
+            <div class="admin-order-details__card flex flex-col gap-8">
+              <h3 class="admin-order-details__section-title">{{ 'admin.orderDetails.history' | translate }}</h3>
+              @if (order.logs.length === 0) {
+                <span class="admin-order-details__muted">{{ 'admin.orderDetails.noHistory' | translate }}</span>
+              } @else {
+                @for (log of order.logs; track log.id) {
+                  <div class="flex flex-row gap-12 admin-order-details__log">
+                    <span class="admin-order-details__muted">{{ log.created | date:'dd.MM.yyyy HH:mm' }}</span>
+                    <span>{{ log.note }}</span>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+
+          <div class="flex--40 flex flex-col gap-16 md-down:w-full">
+            <div class="admin-order-details__card flex flex-col gap-8">
+              <h3 class="admin-order-details__section-title">{{ 'admin.orderDetails.client' | translate }}</h3>
+              <span class="admin-order-details__strong">{{ order.firstName }} {{ order.lastName }}</span>
+              <span>{{ order.street }}</span>
+              <span>{{ order.zipCode }} {{ order.city }}</span>
+              <p-divider></p-divider>
+              <span><i class="pi pi-envelope admin-order-details__muted"></i> {{ order.email }}</span>
+              <span><i class="pi pi-phone admin-order-details__muted"></i> {{ order.phone }}</span>
+            </div>
+
+            <div class="admin-order-details__card flex flex-col gap-8">
+              <h3 class="admin-order-details__section-title">{{ 'admin.orderDetails.payment' | translate }}</h3>
+              <span>{{ order.payment?.name ?? '—' }}</span>
+              @if (order.payment?.note) {
+                <span class="admin-order-details__muted admin-order-details__payment-note">{{ order.payment.note }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

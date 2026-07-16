@@ -17,7 +17,7 @@ public class V3__SeedProductImages extends BaseJavaMigration {
 
     private static final String SEED_DIR = "db/seed/product-images/";
     private static final List<String> IMAGES = List.of(
-            "apple.gif", "loader.gif", "chips.gif", "duck.gif",
+            "apple.gif", "chips.gif", "duck.gif",
             "turkey.gif", "pizza.gif", "wather.gif", "avatar.gif"
     );
 

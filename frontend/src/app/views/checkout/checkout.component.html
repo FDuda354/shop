@@ -1,0 +1,141 @@
+<div class="flex flex-col gap-16 app-container checkout animation-fadeIn">
+  @if (confirmation(); as order) {
+    <div class="flex flex-col items-center gap-12 checkout__confirmation animation-fadeInUp">
+      <i class="pi pi-check-circle checkout__confirmation-icon"></i>
+      <h2>{{ 'checkout.confirmation.thanks' | translate }}</h2>
+      <div class="checkout__confirmation-details flex flex-col gap-8">
+        <div class="flex flex-row justify-between gap-24">
+          <span>{{ 'checkout.confirmation.orderNumber' | translate }}</span><span class="checkout__strong">#{{ order.id }}</span>
+        </div>
+        <div class="flex flex-row justify-between gap-24">
+          <span>{{ 'common.status' | translate }}</span><span class="checkout__strong">{{ 'orderStatus.' + order.status | translate }}</span>
+        </div>
+        <div class="flex flex-row justify-between gap-24">
+          <span>{{ 'checkout.confirmation.toPay' | translate }}</span><span class="checkout__strong">{{ order.grossValue | number:'1.2-2' }} PLN</span>
+        </div>
+        @if (order.payment?.note) {
+          <p-divider></p-divider>
+          <p class="checkout__payment-note">{{ order.payment.note }}</p>
+        }
+      </div>
+      <p-button [label]="'common.backToShop' | translate" icon="pi pi-arrow-left" variant="text" (onClick)="goToShop()"></p-button>
+    </div>
+  } @else if (basketEmpty()) {
+    <div class="flex flex-col items-center justify-center checkout__empty animation-fadeIn">
+      <i class="pi pi-shopping-cart checkout__empty-icon"></i>
+      <h4>{{ 'checkout.emptyBasket' | translate }}</h4>
+      <p-button [label]="'common.backToShopping' | translate" icon="pi pi-arrow-left" variant="text" (onClick)="goToShop()"></p-button>
+    </div>
+  } @else {
+    <h2 class="checkout__title animation-slideInDown">{{ 'checkout.title' | translate }}</h2>
+
+    <div class="flex flex-row gap-24 items-start md-down:flex-col">
+      <form [formRoot]="addressForm" (submit)="onSubmit()" class="flex--60 flex flex-col gap-12 md-down:w-full">
+        <h3 class="checkout__section-title">{{ 'checkout.deliveryData' | translate }}</h3>
+
+        <div class="flex flex-row gap-12 md-down:flex-col">
+          <div class="flex--50 flex flex-col gap-4">
+            <input pInputText [formField]="addressForm.firstName" [placeholder]="'checkout.firstName' | translate"/>
+            @if (addressForm.firstName().touched() && addressForm.firstName().invalid()) {
+              <p-message severity="error">{{ addressForm.firstName().errors()[0].message }}</p-message>
+            }
+          </div>
+          <div class="flex--50 flex flex-col gap-4">
+            <input pInputText [formField]="addressForm.lastName" [placeholder]="'checkout.lastName' | translate"/>
+            @if (addressForm.lastName().touched() && addressForm.lastName().invalid()) {
+              <p-message severity="error">{{ addressForm.lastName().errors()[0].message }}</p-message>
+            }
+          </div>
+        </div>
+
+        <input pInputText [formField]="addressForm.street" [placeholder]="'checkout.street' | translate"/>
+        @if (addressForm.street().touched() && addressForm.street().invalid()) {
+          <p-message severity="error">{{ addressForm.street().errors()[0].message }}</p-message>
+        }
+
+        <div class="flex flex-row gap-12 md-down:flex-col">
+          <div class="flex--33 flex flex-col gap-4">
+            <input pInputText [formField]="addressForm.zipCode" [placeholder]="'checkout.zipCode' | translate"/>
+            @if (addressForm.zipCode().touched() && addressForm.zipCode().invalid()) {
+              <p-message severity="error">{{ addressForm.zipCode().errors()[0].message }}</p-message>
+            }
+          </div>
+          <div class="flex--60 flex flex-col gap-4">
+            <input pInputText [formField]="addressForm.city" [placeholder]="'checkout.city' | translate"/>
+            @if (addressForm.city().touched() && addressForm.city().invalid()) {
+              <p-message severity="error">{{ addressForm.city().errors()[0].message }}</p-message>
+            }
+          </div>
+        </div>
+
+        <input pInputText [formField]="addressForm.email" [placeholder]="'checkout.email' | translate"/>
+        @if (addressForm.email().touched() && addressForm.email().invalid()) {
+          <p-message severity="error">{{ addressForm.email().errors()[0].message }}</p-message>
+        }
+
+        <input pInputText [formField]="addressForm.phone" [placeholder]="'checkout.phone' | translate"/>
+        @if (addressForm.phone().touched() && addressForm.phone().invalid()) {
+          <p-message severity="error">{{ addressForm.phone().errors()[0].message }}</p-message>
+        }
+
+        <h3 class="checkout__section-title">{{ 'checkout.deliveryAndPayment' | translate }}</h3>
+
+        <ui-content-loader [data]="initOrder" [contentTemplate]="initContent">
+          <ng-template #initContent>
+            <div class="flex flex-col gap-12">
+              <p-select [options]="shipmentOptions()"
+                        optionLabel="label"
+                        optionValue="id"
+                        [placeholder]="'checkout.shipmentPlaceholder' | translate"
+                        [ngModel]="shipmentId()"
+                        (ngModelChange)="shipmentId.set($event)"
+                        [ngModelOptions]="{standalone: true}">
+              </p-select>
+              <p-select [options]="paymentOptions()"
+                        optionLabel="label"
+                        optionValue="id"
+                        [placeholder]="'checkout.paymentPlaceholder' | translate"
+                        [ngModel]="paymentId()"
+                        (ngModelChange)="paymentId.set($event)"
+                        [ngModelOptions]="{standalone: true}">
+              </p-select>
+            </div>
+          </ng-template>
+        </ui-content-loader>
+
+        <p-button [label]="'checkout.submit' | translate"
+                  icon="pi pi-check"
+                  type="submit"
+                  styleClass="checkout__submit"
+                  [loading]="addressForm().submitting()"></p-button>
+      </form>
+
+      <div class="flex--40 checkout__summary flex flex-col gap-12 md-down:w-full">
+        <h3 class="checkout__section-title">{{ 'basket.summary' | translate }}</h3>
+        <ui-content-loader [data]="basket" [contentTemplate]="basketContent">
+          <ng-template #basketContent let-basket>
+            <div class="flex flex-col gap-8">
+              @for (item of basket.items; track item.id) {
+                <div class="flex flex-row justify-between gap-8">
+                  <span>{{ localizedName(item.product) }} × {{ item.quantity }}</span>
+                  <span>{{ item.linePrice | number:'1.2-2' }} {{ item.product.currency }}</span>
+                </div>
+              }
+              <p-divider></p-divider>
+              @if (selectedShipment(); as shipment) {
+                <div class="flex flex-row justify-between gap-8">
+                  <span>{{ 'checkout.delivery' | translate:{name: shipment.label} }}</span>
+                  <span>{{ shipment.price | number:'1.2-2' }} PLN</span>
+                </div>
+              }
+              <div class="flex flex-row justify-between gap-8 checkout__total">
+                <span>{{ 'common.total' | translate }}</span>
+                <span>{{ totalValue() | number:'1.2-2' }} PLN</span>
+              </div>
+            </div>
+          </ng-template>
+        </ui-content-loader>
+      </div>
+    </div>
+  }
+</div>

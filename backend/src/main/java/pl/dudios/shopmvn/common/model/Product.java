@@ -32,6 +32,10 @@ public class Product {
     private Long categoryId;
     private String description;
     private String fullDescription;
+    // Wersja angielska (opcjonalna) — null/pusty = frontend pokazuje polską.
+    private String nameEn;
+    private String descriptionEn;
+    private String fullDescriptionEn;
     private BigDecimal price;
     private String currency;
     private String image;

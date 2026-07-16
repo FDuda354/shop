@@ -46,7 +46,7 @@ public class Basket {
                 .filter(basketItem -> Objects.equals(basketItem.getProduct().getId(), item.getProduct().getId()))
                 .findFirst()
                 .ifPresentOrElse(basketItem ->
-                                basketItem.setQuantity(basketItem.getQuantity() + 1),
+                                basketItem.setQuantity(basketItem.getQuantity() + item.getQuantity()),
                         () -> items.add(item));
 
         return this;

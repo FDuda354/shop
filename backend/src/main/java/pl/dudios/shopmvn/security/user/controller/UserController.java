@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.dudios.shopmvn.security.user.model.AppUserDetails;
 import pl.dudios.shopmvn.security.user.model.dto.ChangePassword;
 import pl.dudios.shopmvn.security.user.service.UserService;
 
@@ -18,19 +19,25 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping("/profile/image")
-    public UserProfileUpdate updateProfileImage(@AuthenticationPrincipal Long userId, @RequestBody UserProfileUpdate userProfileUpdate) {
-        return userService.updateProfileImage(userId, userProfileUpdate);
+    public UserProfileUpdate updateProfileImage(@AuthenticationPrincipal AppUserDetails user, @RequestBody UserProfileUpdate userProfileUpdate) {
+        return userService.updateProfileImage(requireUserId(user), userProfileUpdate);
     }
 
     @GetMapping("/profile/{userId}/image")
     public UserProfileUpdate getProfileImage(@PathVariable Long userId) {
-        System.out.println(userId);
         return userService.getProfileImage(userId);
     }
 
     @PostMapping("/profile/changePassword")
-    public void changePassword(@AuthenticationPrincipal Long userId, @RequestBody ChangePassword changePassword) {
-        userService.changePassword(userId, changePassword);
+    public void changePassword(@AuthenticationPrincipal AppUserDetails user, @RequestBody ChangePassword changePassword) {
+        userService.changePassword(requireUserId(user), changePassword);
+    }
+
+    private static Long requireUserId(AppUserDetails user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Not logged in");
+        }
+        return user.getId();
     }
 
 }

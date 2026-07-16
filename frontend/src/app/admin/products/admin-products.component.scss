@@ -1,0 +1,25 @@
+.admin-products {
+  &__title {
+    margin: 0;
+  }
+
+  &__thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: var(--p-content-background);
+
+    .pi {
+      font-size: 20px;
+    }
+  }
+
+  &__name {
+    font-weight: 700;
+  }
+
+  &__price-col {
+    text-align: right;
+  }
+}

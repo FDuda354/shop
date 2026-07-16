@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.dudios.shopmvn.security.user.model.AppUserDetails;
 import pl.dudios.shopmvn.order.model.dto.InitOrder;
 import pl.dudios.shopmvn.order.model.dto.OrderDto;
 import pl.dudios.shopmvn.order.model.dto.OrderDtoForUser;
@@ -24,8 +25,8 @@ public class OrderController {
     private final PaymentService paymentService;
 
     @PostMapping("/order")
-    public OrderSummary createOrder(@RequestBody OrderDto orderDto, @AuthenticationPrincipal Long userId) {
-        return orderService.createOrder(orderDto, userId);
+    public OrderSummary createOrder(@RequestBody OrderDto orderDto, @AuthenticationPrincipal AppUserDetails user) {
+        return orderService.createOrder(orderDto, user != null ? user.getId() : null);
     }
 
     @GetMapping("/order/initOrder")
@@ -37,11 +38,10 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public List<OrderDtoForUser> getOrders(@AuthenticationPrincipal Long userId) {
-        if (userId == null) {
+    public List<OrderDtoForUser> getOrders(@AuthenticationPrincipal AppUserDetails user) {
+        if (user == null) {
             throw new IllegalArgumentException("NULL user in getOrders");
         }
-        System.out.println(orderService.getOrdersFromUser(userId));
-        return orderService.getOrdersFromUser(userId);
+        return orderService.getOrdersFromUser(user.getId());
     }
 }

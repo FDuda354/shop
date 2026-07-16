@@ -1,0 +1,31 @@
+.admin-dashboard {
+  &__title {
+    margin: 0;
+  }
+
+  &__stat {
+    min-width: 220px;
+    padding: 16px 24px;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 12px;
+    background: var(--app-panel-bg);
+  }
+
+  &__stat-label {
+    font-size: 13px;
+    color: var(--p-text-muted-color);
+  }
+
+  &__stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--p-primary-color);
+  }
+
+  &__chart {
+    padding: 16px;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 12px;
+    background: var(--app-panel-bg);
+  }
+}

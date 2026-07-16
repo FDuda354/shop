@@ -30,6 +30,7 @@ tasks.register<NpmTask>("buildFrontend") {
     dependsOn(tasks.named("npmCi"))
 
     args.set(listOf("run", "build"))
+    environment.set(mapOf("PRIMEUI_LICENSE" to (System.getenv("PRIMEUI_LICENSE") ?: "")))
 
     inputs.dir("src")
     inputs.dir("public")

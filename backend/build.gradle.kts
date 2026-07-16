@@ -1,3 +1,5 @@
+import java.math.BigDecimal
+
 plugins {
     java
     jacoco
@@ -35,9 +37,8 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
     runtimeOnly("org.postgresql:postgresql")
 
-    // Security + JWT
+    // Security (sesja + CSRF, jak w debtor/hercu-pulpit)
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.auth0:java-jwt:4.6.0")
 
     // Mail
     implementation("org.springframework.boot:spring-boot-starter-mail")
@@ -100,6 +101,7 @@ tasks.register<Test>("integrationTest") {
 
 tasks.named("check") {
     dependsOn(tasks.named("integrationTest"))
+    dependsOn(tasks.named("jacocoTestCoverageVerification"))
 }
 
 jacoco {
@@ -107,12 +109,60 @@ jacoco {
     toolVersion = "0.8.13"
 }
 
+// Klasy bez logiki biznesowej zaniżałyby próg pokrycia — wyłączamy je zarówno
+// z raportu, jak i z bramki jakości (wzór z debtor, dopasowany do pakietów
+// shop: klasy konfiguracyjne żyją w security/ i common/mail/, nie w config/).
+val coverageExcludes = listOf(
+    "pl/dudios/shopmvn/ShopmvnApplication.class",
+    "**/model/**",
+    "**/dto/**",
+    "**/*Config.class",
+    "db/migration/**",
+)
+
 tasks.named<JacocoReport>("jacocoTestReport") {
     dependsOn(tasks.named("test"), tasks.named("integrationTest"))
     executionData.setFrom(fileTree(layout.buildDirectory).include("jacoco/*.exec"))
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) { exclude(coverageExcludes) }
+        })
+    )
     reports {
-        xml.required.set(true)   // dla CI / SonarQube
+        xml.required.set(true)   // dla CI / Qodany / SonarQube
         html.required.set(true)  // lokalny podgląd: build/reports/jacoco/test/html/index.html
+    }
+    finalizedBy("copyJacocoForQodana")
+}
+
+// Qodana czyta pokrycie z <root>/.qodana/code-coverage/ (konwencja JetBrains).
+tasks.register<Copy>("copyJacocoForQodana") {
+    val xmlReport = layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml")
+    onlyIf { xmlReport.get().asFile.exists() }
+    from(xmlReport)
+    into(rootProject.layout.projectDirectory.dir(".qodana/code-coverage"))
+    rename { "jacoco.xml" }
+}
+
+tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
+    dependsOn(tasks.named("jacocoTestReport"))
+    executionData.setFrom(fileTree(layout.buildDirectory).include("jacoco/*.exec"))
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) { exclude(coverageExcludes) }
+        })
+    )
+    violationRules {
+        rule {
+            limit {
+                counter = "LINE"
+                // Ratchet: realne pokrycie logiki to ~13% linii (klasy *Config
+                // wykluczone, choć kontekst Springa i tak je wykonuje) — próg
+                // trzyma stan posiadania i rośnie wraz z testami. Cel: 0.60 (debtor).
+                value = "COVEREDRATIO"
+                minimum = BigDecimal("0.10")
+            }
+        }
     }
 }
 

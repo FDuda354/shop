@@ -1,0 +1,29 @@
+<div class="language-switcher flex flex-row items-center gap-4">
+  <button type="button"
+          class="language-switcher__flag"
+          [class.language-switcher__flag--active]="languageService.lang() === 'pl'"
+          [attr.aria-pressed]="languageService.lang() === 'pl'"
+          [attr.aria-label]="'header.languagePl' | translate"
+          [title]="'header.languagePl' | translate"
+          (click)="languageService.set('pl')">
+    <svg viewBox="0 0 16 10" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <rect width="16" height="5" y="0" fill="#ffffff"/>
+      <rect width="16" height="5" y="5" fill="#dc143c"/>
+    </svg>
+  </button>
+  <button type="button"
+          class="language-switcher__flag"
+          [class.language-switcher__flag--active]="languageService.lang() === 'en'"
+          [attr.aria-pressed]="languageService.lang() === 'en'"
+          [attr.aria-label]="'header.languageEn' | translate"
+          [title]="'header.languageEn' | translate"
+          (click)="languageService.set('en')">
+    <svg viewBox="0 0 60 30" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <rect width="60" height="30" fill="#012169"/>
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#ffffff" stroke-width="6"/>
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#c8102e" stroke-width="2.4"/>
+      <path d="M30,0 V30 M0,15 H60" stroke="#ffffff" stroke-width="10"/>
+      <path d="M30,0 V30 M0,15 H60" stroke="#c8102e" stroke-width="6"/>
+    </svg>
+  </button>
+</div>

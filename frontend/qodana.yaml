@@ -1,0 +1,48 @@
+#-------------------------------------------------------------------------------#
+#     Qodana config dedykowany dla frontendu (Angular + TypeScript + styles).   #
+#     Jest odpalany przez osobny TeamCity BuildType "Qodana Frontend"           #
+#     z Working Directory = frontend, obraz jetbrains/qodana-js:latest.         #
+#                                                                               #
+#     Scope: TYLKO frontend/ — wszystkie ścieżki poniżej są relatywne do        #
+#     tego katalogu (TeamCity montuje frontend/ jako /data/project).            #
+#                                                                               #
+#     Reguły globalne (licenseRules, failureConditions, itp.) są dziedziczone   #
+#     z DUDIOS global config w Qodana Cloud — te same co scan backendu.         #
+#-------------------------------------------------------------------------------#
+version: "1.0"
+
+linter: jetbrains/qodana-js:latest
+
+fixesStrategy: none
+
+profile:
+  name: qodana.recommended
+  inspections:
+    - inspection: HardcodedPasswords
+      enabled: true
+      options:
+        reportDefaultSuspiciousVariableNames: false
+    - inspection: AngularUndefinedBinding
+      enabled: false
+    - inspection: JSConstantReassignment
+      enabled: false
+    - inspection: AngularIncorrectBlockUsage
+      enabled: false
+    - inspection: AngularUnresolvedPipe
+      enabled: false
+    - inspection: AngularUnsupportedSyntax
+      enabled: false
+    - inspection: AngularCliAddDependency
+      enabled: false
+
+bootstrap: npm ci --prefer-offline --no-audit
+
+# ---------- Frontend-specific excludes ----------
+exclude:
+  - name: All
+    paths:
+      - node_modules
+      - dist
+      - .angular
+      - coverage
+      - .nx

@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 public class ProductItemDto {
     private Long id;
     private String name;
+    private String nameEn;
     private BigDecimal price;
     private String currency;
     private String image;

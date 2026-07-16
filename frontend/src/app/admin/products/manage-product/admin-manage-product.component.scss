@@ -1,0 +1,32 @@
+.admin-manage-product {
+  &__title {
+    margin: 0;
+  }
+
+  &__image-panel {
+    padding: 16px;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 12px;
+    background: var(--app-panel-bg);
+  }
+
+  &__preview {
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 1px solid var(--p-content-border-color);
+    background: var(--p-content-background);
+
+    .pi {
+      font-size: 48px;
+    }
+  }
+
+  &__image-name {
+    font-size: 13px;
+    color: var(--p-text-muted-color);
+    word-break: break-all;
+  }
+}

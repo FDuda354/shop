@@ -20,6 +20,9 @@ public class Category {
     private Long id;
     private String name;
     private String description;
+    // Wersja angielska (opcjonalna) — null/pusty = frontend pokazuje polską.
+    private String nameEn;
+    private String descriptionEn;
     private String slug;
 
 }

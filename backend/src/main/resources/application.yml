@@ -1,5 +1,13 @@
 server:
-  port: 8082
+  port: 8080
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      timeout: 10h
+      cookie:
+        http-only: true
+        same-site: strict
+        secure: ${SESSION_COOKIE_SECURE:false}
 
 spring:
   web:
@@ -47,9 +55,13 @@ logging:
   level:
     org.springframework.web: INFO
 
-jwt:
-  expirationTime: 2592000000
-  secret: ${JWT_SECRET}
+# Wymagane przez CorsConfig (@Value bez defaultów) — bez tego bloku kontekst
+# aplikacji w ogóle nie wstaje.
+cors:
+  allowed-origins: "http://localhost:4200,https://shop.dudios.pl"
+  allowed-methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS"
+  allowed-headers: "Content-Type,Accept,X-Requested-With,X-XSRF-TOKEN"
+  exposed-headers: "Content-Disposition"
 
 app:
   serviceAddress: https://shop.dudios.pl

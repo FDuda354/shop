@@ -1,0 +1,47 @@
+.side-bar {
+  padding: 16px 12px;
+
+  &__section-label {
+    margin-top: 12px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--p-text-muted-color);
+  }
+
+  &__item {
+    position: relative;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: var(--p-text-color);
+    text-decoration: none;
+    transition: background-color 0.15s ease-out, color 0.15s ease-out;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      height: 60%;
+      width: 3px;
+      border-radius: 2px;
+      background: transparent;
+      transition: background-color 0.15s ease-out;
+    }
+
+    &:hover {
+      background: var(--p-content-hover-background);
+    }
+
+    &--active {
+      color: var(--p-primary-color);
+      font-weight: 700;
+
+      &::before {
+        background: var(--p-primary-color);
+      }
+    }
+  }
+}

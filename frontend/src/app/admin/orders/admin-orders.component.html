@@ -1,0 +1,67 @@
+<div class="flex flex-col gap-16 admin-orders animation-fadeIn">
+  <div class="flex flex-row items-center justify-between flex-wrap gap-12 animation-slideInDown">
+    <h2 class="admin-orders__title">{{ 'admin.orders.title' | translate }}</h2>
+
+    <div class="flex flex-row items-center gap-8 flex-wrap">
+      <p-datepicker selectionMode="range"
+                    [readonlyInput]="true"
+                    [placeholder]="'admin.orders.dateRange' | translate"
+                    dateFormat="dd.mm.yy"
+                    [ngModel]="exportRange()"
+                    (ngModelChange)="exportRange.set($event)">
+      </p-datepicker>
+      <p-select [options]="statusOptions()"
+                optionLabel="label"
+                optionValue="value"
+                [placeholder]="'common.status' | translate"
+                styleClass="admin-orders__status-select"
+                [ngModel]="exportStatus()"
+                (ngModelChange)="exportStatus.set($event)">
+      </p-select>
+      <p-button [label]="'admin.orders.exportCsv' | translate"
+                icon="pi pi-download"
+                variant="outlined"
+                [disabled]="!exportRange() || !exportStatus()"
+                (onClick)="exportCsv()"></p-button>
+    </div>
+  </div>
+
+  <ui-content-loader [data]="store.data" [contentTemplate]="content">
+    <ng-template #content let-orders>
+      <div class="flex flex-col gap-12">
+        <p-table [value]="orders" dataKey="id" class="animation-fadeInUp">
+          <ng-template #header>
+            <tr>
+              <th>{{ 'common.orderNo' | translate }}</th>
+              <th>{{ 'common.date' | translate }}</th>
+              <th>{{ 'common.status' | translate }}</th>
+              <th class="admin-orders__value-col">{{ 'common.value' | translate }}</th>
+              <th style="width: 72px;"></th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-order>
+            <tr class="admin-orders__row" (click)="goToDetails(order)">
+              <td>#{{ order.id }}</td>
+              <td>{{ order.placeDate | date:'dd.MM.yyyy HH:mm' }}</td>
+              <td><p-tag [value]="'orderStatus.' + order.orderStatus | translate" [severity]="orderStatusSeverity(order.orderStatus)" [rounded]="true"></p-tag></td>
+              <td class="admin-orders__value-col">{{ order.grossValue | number:'1.2-2' }} PLN</td>
+              <td><p-button icon="pi pi-angle-right" variant="text" [ariaLabel]="'admin.orders.details' | translate"></p-button></td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        @if (store.pageResp().totalElements > 10) {
+          <div class="flex flex-row justify-center">
+            <p-paginator
+              [rows]="store.pageResp().size"
+              [totalRecords]="store.pageResp().totalElements"
+              (onPageChange)="onPageChange($event)"
+              [rowsPerPageOptions]="[10, 25, 50]"
+              [first]="store.pageResp().number * store.pageResp().size"
+            ></p-paginator>
+          </div>
+        }
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

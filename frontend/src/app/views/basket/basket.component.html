@@ -1,0 +1,69 @@
+<div class="flex flex-col gap-16 app-container basket animation-fadeIn">
+  <h2 class="basket__title animation-slideInDown">{{ 'basket.title' | translate }}</h2>
+
+  @if (!hasBasket()) {
+    <ng-template [ngTemplateOutlet]="emptyBasket"></ng-template>
+  } @else {
+    <ui-content-loader [data]="basket" [contentTemplate]="content" [emptyTemplate]="emptyBasket">
+      <ng-template #content let-basket>
+        @if (basket.items.length === 0) {
+          <ng-template [ngTemplateOutlet]="emptyBasket"></ng-template>
+        } @else {
+          <div class="flex flex-row gap-24 md-down:flex-col items-start">
+            <div class="flex--60 flex flex-col gap-12 md-down:w-full">
+              @for (item of basket.items; track item.id) {
+                <div class="basket__item flex flex-row items-center gap-12">
+                  @if (imageUrl(item.product.image); as src) {
+                    <img [src]="src" [alt]="localizedName(item.product)" class="basket__item-image"/>
+                  } @else {
+                    <div class="image-placeholder basket__item-image">
+                      <i class="pi pi-image"></i>
+                    </div>
+                  }
+                  <div class="flex flex-col gap-4 grow">
+                    <a class="basket__item-name" [routerLink]="['/product', item.product.slug]">{{ localizedName(item.product) }}</a>
+                    <span class="basket__item-price">{{ item.product.price | number:'1.2-2' }} {{ item.product.currency }}</span>
+                  </div>
+                  <p-inputnumber [ngModel]="item.quantity"
+                                 (ngModelChange)="quantityChanged(item, $event)"
+                                 [min]="1"
+                                 [max]="99"
+                                 [showButtons]="true"
+                                 buttonLayout="horizontal"
+                                 inputStyleClass="basket__quantity-input">
+                  </p-inputnumber>
+                  <span class="basket__item-line-price">{{ item.linePrice | number:'1.2-2' }} {{ item.product.currency }}</span>
+                  <p-button icon="pi pi-trash"
+                            severity="danger"
+                            variant="text"
+                            [ariaLabel]="'basket.removeItem' | translate"
+                            (onClick)="removeItem(item)"></p-button>
+                </div>
+              }
+            </div>
+
+            <div class="flex--40 basket__summary flex flex-col gap-12 md-down:w-full">
+              <h3 class="basket__summary-title">{{ 'basket.summary' | translate }}</h3>
+              <div class="flex flex-row justify-between">
+                <span>{{ 'basket.productsValue' | translate }}</span>
+                <span class="basket__summary-value">{{ basket.summary.grossValue | number:'1.2-2' }} PLN</span>
+              </div>
+              <p-button [label]="'basket.goToCheckout' | translate"
+                        icon="pi pi-arrow-right"
+                        iconPos="right"
+                        (onClick)="goToCheckout()"></p-button>
+            </div>
+          </div>
+        }
+      </ng-template>
+    </ui-content-loader>
+  }
+
+  <ng-template #emptyBasket>
+    <div class="flex flex-col items-center justify-center basket__empty">
+      <i class="pi pi-shopping-cart basket__empty-icon"></i>
+      <h4>{{ 'basket.empty' | translate }}</h4>
+      <p-button [label]="'common.backToShopping' | translate" icon="pi pi-arrow-left" variant="text" (onClick)="goToShop()"></p-button>
+    </div>
+  </ng-template>
+</div>

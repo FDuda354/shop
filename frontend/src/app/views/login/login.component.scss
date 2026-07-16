@@ -1,0 +1,32 @@
+.auth-page {
+  min-height: 100vh;
+  padding: 16px;
+  background: var(--p-content-background);
+
+  &__card {
+    width: 100%;
+    max-width: 400px;
+    padding: 32px;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 16px;
+    background: var(--app-panel-bg);
+  }
+
+  &__logo {
+    font-size: 40px;
+    color: var(--p-primary-color);
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__subtitle {
+    color: var(--p-text-muted-color);
+    font-size: 14px;
+  }
+
+  &__submit {
+    width: 100%;
+  }
+}

@@ -1,0 +1,38 @@
+<div class="flex flex-col full-layout">
+  <header class="full-layout__header">
+    <p-menubar [model]="menuItems()">
+      <ng-template #start>
+        <a routerLink="/admin" class="full-layout__brand flex flex-row items-center gap-8">
+          <i class="pi pi-shield full-layout__brand-icon"></i>
+          <span class="full-layout__brand-name">Dudios&nbsp;Admin</span>
+        </a>
+      </ng-template>
+      <ng-template #end>
+        <div class="flex flex-row items-center gap-12">
+          <app-language-switcher></app-language-switcher>
+
+          <div class="full-layout__theme flex items-center gap-8">
+            <i class="pi pi-sun"></i>
+            <p-toggleswitch [ngModel]="themeService.dark()" (ngModelChange)="themeService.toggle()"/>
+            <i class="pi pi-moon"></i>
+          </div>
+          <p-button [label]="'admin.menu.shop' | translate"
+                    icon="pi pi-shopping-bag"
+                    variant="text"
+                    severity="secondary"
+                    routerLink="/"></p-button>
+          <p-button icon="pi pi-sign-out"
+                    variant="text"
+                    severity="secondary"
+                    [ariaLabel]="'header.logout' | translate"
+                    [pTooltip]="'header.logout' | translate"
+                    tooltipPosition="bottom"
+                    (onClick)="authService.logout()"></p-button>
+        </div>
+      </ng-template>
+    </p-menubar>
+  </header>
+  <main class="full-layout__content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

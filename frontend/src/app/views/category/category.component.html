@@ -1,0 +1,39 @@
+<div class="flex flex-col gap-16 app-container category animation-fadeIn">
+  <ui-content-loader [data]="store.data" [contentTemplate]="content">
+    <ng-template #content>
+      <div class="flex flex-col gap-16">
+        <div class="category__header animation-slideInDown">
+          <h2 class="category__title">{{ categoryName() }}</h2>
+          @if (categoryDescription(); as description) {
+            <p class="category__description">{{ description }}</p>
+          }
+        </div>
+
+        @if (store.pageResp().content.length === 0) {
+          <div class="flex flex-col items-center justify-center category__empty">
+            <i class="pi pi-inbox category__empty-icon"></i>
+            <h4>{{ 'category.empty' | translate }}</h4>
+          </div>
+        } @else {
+          <div class="category__grid flex flex-row flex-wrap gap-16 justify-center animation-fadeInUp">
+            @for (product of store.pageResp().content; track product.id) {
+              <app-product-card [product]="product"></app-product-card>
+            }
+          </div>
+        }
+
+        @if (store.pageResp().totalElements > 12) {
+          <div class="flex flex-row justify-center">
+            <p-paginator
+              [rows]="store.pageResp().size"
+              [totalRecords]="store.pageResp().totalElements"
+              (onPageChange)="onPageChange($event)"
+              [rowsPerPageOptions]="[12, 24, 48]"
+              [first]="store.pageResp().number * store.pageResp().size"
+            ></p-paginator>
+          </div>
+        }
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

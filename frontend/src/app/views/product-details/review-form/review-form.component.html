@@ -1,0 +1,23 @@
+<form [formRoot]="reviewForm()" (submit)="onSubmit()" class="review-form flex flex-col gap-12">
+  <h4 class="review-form__title">{{ 'product.review.formTitle' | translate }}</h4>
+
+  <p-iconfield>
+    <input pInputText [formField]="reviewForm().authorName" [placeholder]="'product.review.authorPlaceholder' | translate"/>
+    <p-inputicon class="pi pi-user"/>
+  </p-iconfield>
+  @if (reviewForm().authorName().touched() && reviewForm().authorName().invalid()) {
+    <p-message severity="error">{{ reviewForm().authorName().errors()[0].message }}</p-message>
+  }
+
+  <textarea pTextarea [formField]="reviewForm().content" rows="3" [placeholder]="'product.review.contentPlaceholder' | translate"></textarea>
+  @if (reviewForm().content().touched() && reviewForm().content().invalid()) {
+    <p-message severity="error">{{ reviewForm().content().errors()[0].message }}</p-message>
+  }
+
+  <div class="flex flex-row justify-end">
+    <p-button [label]="'product.review.submit' | translate"
+              icon="pi pi-send"
+              type="submit"
+              [loading]="reviewForm()().submitting()"></p-button>
+  </div>
+</form>

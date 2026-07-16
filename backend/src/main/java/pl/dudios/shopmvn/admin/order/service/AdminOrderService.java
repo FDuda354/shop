@@ -75,7 +75,7 @@ public class AdminOrderService {
                 AdminOrderLog.builder()
                         .created(LocalDateTime.now())
                         .orderId(orderId)
-                        .note("Change of order status from" + oldStatus + " to " + newStatus)
+                        .note("Change of order status from " + oldStatus + " to " + newStatus)
                         .build()
         );
     }

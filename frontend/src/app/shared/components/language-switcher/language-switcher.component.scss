@@ -1,0 +1,34 @@
+.language-switcher {
+  &__flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    // Flaga nieaktywnego języka jest wyszarzona — aktywną wyróżnia pełny
+    // kolor i obwódka w kolorze primary.
+    opacity: 0.45;
+    overflow: hidden;
+    line-height: 0;
+    transition: opacity 0.15s ease-out, border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+
+    svg {
+      width: 24px;
+      height: 15px;
+      display: block;
+    }
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &--active {
+      opacity: 1;
+      border-color: var(--p-primary-color);
+      box-shadow: 0 0 0 1px var(--p-primary-color);
+    }
+  }
+}

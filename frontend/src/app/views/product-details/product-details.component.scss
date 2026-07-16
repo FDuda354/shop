@@ -1,0 +1,81 @@
+.product-details {
+  &__image-wrapper {
+    background: var(--app-panel-bg);
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 320px;
+  }
+
+  &__image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  &__placeholder {
+    .pi {
+      font-size: 56px;
+    }
+  }
+
+  &__name {
+    margin: 0;
+  }
+
+  &__price {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--p-primary-color);
+  }
+
+  &__description {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  &__full-description {
+    margin: 0;
+    color: var(--p-text-muted-color);
+  }
+
+  &__actions {
+    margin-top: 12px;
+
+    // Etykieta przycisku ("Do koszyka" / "Add to cart") ma zostać w jednej linii.
+    ::ng-deep .p-button {
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  }
+
+  &__reviews-title {
+    margin: 0;
+  }
+
+  &__no-reviews {
+    color: var(--p-text-muted-color);
+  }
+
+  &__review {
+    padding: 12px 16px;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 8px;
+    background: var(--app-panel-bg);
+  }
+
+  &__review-author {
+    font-weight: 700;
+  }
+
+  &__review-content {
+    margin: 0;
+  }
+}
+
+:host ::ng-deep .product-details__quantity-input {
+  width: 64px;
+  text-align: center;
+}

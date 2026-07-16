@@ -1,0 +1,19 @@
+.orders {
+  &__title {
+    margin: 0;
+  }
+
+  &__value-col {
+    text-align: right;
+  }
+
+  &__empty {
+    min-height: 200px;
+  }
+
+  &__empty-icon {
+    font-size: 48px;
+    color: var(--p-surface-400);
+    margin-bottom: 16px;
+  }
+}

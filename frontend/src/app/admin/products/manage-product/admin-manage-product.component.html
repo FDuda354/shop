@@ -1,0 +1,107 @@
+<div class="flex flex-col gap-16 admin-manage-product animation-fadeIn">
+  <div class="flex flex-row items-center gap-12 animation-slideInDown">
+    <p-button icon="pi pi-arrow-left" variant="text" severity="secondary" [ariaLabel]="'common.back' | translate" (onClick)="cancel()"></p-button>
+    <h2 class="admin-manage-product__title">{{ (isEdit() ? 'admin.manageProduct.editTitle' : 'admin.manageProduct.newTitle') | translate }}</h2>
+  </div>
+
+  <form [formRoot]="productForm" (submit)="onSubmit()" class="flex flex-row gap-24 items-start md-down:flex-col">
+    <div class="flex--60 flex flex-col gap-12 md-down:w-full">
+      <input pInputText [formField]="productForm.name" [placeholder]="'admin.manageProduct.namePlaceholder' | translate"/>
+      @if (productForm.name().touched() && productForm.name().invalid()) {
+        <p-message severity="error">{{ productForm.name().errors()[0].message }}</p-message>
+      }
+
+      <input pInputText [formField]="productForm.slug" [placeholder]="'admin.manageProduct.slugPlaceholder' | translate"/>
+      @if (productForm.slug().touched() && productForm.slug().invalid()) {
+        <p-message severity="error">{{ productForm.slug().errors()[0].message }}</p-message>
+      }
+
+      <input pInputText [formField]="productForm.description" [placeholder]="'admin.manageProduct.descriptionPlaceholder' | translate"/>
+      @if (productForm.description().touched() && productForm.description().invalid()) {
+        <p-message severity="error">{{ productForm.description().errors()[0].message }}</p-message>
+      }
+
+      <textarea pTextarea [formField]="productForm.fullDescription" rows="5" [placeholder]="'admin.manageProduct.fullDescriptionPlaceholder' | translate"></textarea>
+
+      <p-divider align="left">{{ 'admin.translationsEn' | translate }}</p-divider>
+
+      <input pInputText [formField]="productForm.nameEn" [placeholder]="'admin.manageProduct.nameEnPlaceholder' | translate"/>
+      @if (productForm.nameEn().touched() && productForm.nameEn().invalid()) {
+        <p-message severity="error">{{ productForm.nameEn().errors()[0].message }}</p-message>
+      }
+
+      <input pInputText [formField]="productForm.descriptionEn" [placeholder]="'admin.manageProduct.descriptionEnPlaceholder' | translate"/>
+      @if (productForm.descriptionEn().touched() && productForm.descriptionEn().invalid()) {
+        <p-message severity="error">{{ productForm.descriptionEn().errors()[0].message }}</p-message>
+      }
+
+      <textarea pTextarea [formField]="productForm.fullDescriptionEn" rows="5" [placeholder]="'admin.manageProduct.fullDescriptionEnPlaceholder' | translate"></textarea>
+
+      <div class="flex flex-row gap-12 md-down:flex-col">
+        <div class="flex--50 flex flex-col gap-4">
+          <ui-content-loader [data]="categories" [contentTemplate]="categoriesContent">
+            <ng-template #categoriesContent>
+              <p-select [options]="categoryOptions()"
+                        optionLabel="label"
+                        optionValue="id"
+                        [placeholder]="'admin.manageProduct.categoryPlaceholder' | translate"
+                        [ngModel]="categoryId()"
+                        (ngModelChange)="categoryId.set($event)"
+                        [ngModelOptions]="{standalone: true}">
+              </p-select>
+            </ng-template>
+          </ui-content-loader>
+        </div>
+        <div class="flex--33 flex flex-col gap-4">
+          <p-inputnumber [placeholder]="'admin.manageProduct.pricePlaceholder' | translate"
+                         mode="decimal"
+                         [minFractionDigits]="2"
+                         [maxFractionDigits]="2"
+                         [min]="0"
+                         [ngModel]="productForm.price().value()"
+                         (ngModelChange)="productForm.price().value.set($event)"
+                         [ngModelOptions]="{standalone: true}">
+          </p-inputnumber>
+          @if (productForm.price().touched() && productForm.price().invalid()) {
+            <p-message severity="error">{{ productForm.price().errors()[0].message }}</p-message>
+          }
+        </div>
+        <div class="flex--20 flex flex-col gap-4">
+          <p-select [options]="currencies"
+                    [placeholder]="'admin.manageProduct.currencyPlaceholder' | translate"
+                    [ngModel]="currency()"
+                    (ngModelChange)="currency.set($event)"
+                    [ngModelOptions]="{standalone: true}">
+          </p-select>
+        </div>
+      </div>
+
+      <div class="flex flex-row gap-12 justify-end">
+        <p-button [label]="'common.cancel' | translate" variant="text" severity="secondary" (onClick)="cancel()"></p-button>
+        <p-button [label]="(isEdit() ? 'admin.manageProduct.saveChanges' : 'admin.manageProduct.addProduct') | translate"
+                  icon="pi pi-check"
+                  type="submit"
+                  [loading]="productForm().submitting()"></p-button>
+      </div>
+    </div>
+
+    <div class="flex--40 admin-manage-product__image-panel flex flex-col items-center gap-12 md-down:w-full">
+      @if (imageUrl(productModel().image); as src) {
+        <img [src]="src" [alt]="'admin.manageProduct.productImageAlt' | translate" class="admin-manage-product__preview"/>
+      } @else {
+        <div class="image-placeholder admin-manage-product__preview">
+          <i class="pi pi-image"></i>
+        </div>
+      }
+      <p-button [label]="'admin.manageProduct.uploadImage' | translate"
+                icon="pi pi-upload"
+                variant="outlined"
+                [loading]="uploadingImage()"
+                (onClick)="imageInput.click()"></p-button>
+      <input #imageInput type="file" accept="image/*" (change)="onImageSelected($event)" hidden/>
+      @if (productModel().image) {
+        <span class="admin-manage-product__image-name">{{ productModel().image }}</span>
+      }
+    </div>
+  </form>
+</div>

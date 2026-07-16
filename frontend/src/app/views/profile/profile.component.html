@@ -1,0 +1,58 @@
+<div class="flex flex-col gap-16 app-container profile animation-fadeIn">
+  <h2 class="profile__title animation-slideInDown">{{ 'profile.title' | translate }}</h2>
+
+  <div class="flex flex-row gap-24 items-start md-down:flex-col">
+    <div class="flex--40 profile__card flex flex-col items-center gap-12 md-down:w-full">
+      <ui-content-loader [data]="profileImage" [contentTemplate]="avatarContent">
+        <ng-template #avatarContent let-profile>
+          @if (imageUrl(profile.image); as src) {
+            <img [src]="src" alt="Avatar" class="profile__avatar"/>
+          } @else {
+            <div class="image-placeholder profile__avatar profile__avatar--placeholder">
+              <i class="pi pi-user"></i>
+            </div>
+          }
+        </ng-template>
+      </ui-content-loader>
+      <span class="profile__username">{{ authService.currentUser()?.username }}</span>
+
+      <p-button [label]="'profile.changePhoto' | translate"
+                icon="pi pi-camera"
+                variant="outlined"
+                [loading]="uploadingAvatar()"
+                (onClick)="fileInput.click()"></p-button>
+      <input #fileInput type="file" accept="image/*" (change)="onAvatarSelected($event)" hidden/>
+    </div>
+
+    <div class="flex--60 profile__card flex flex-col gap-12 md-down:w-full">
+      <h3 class="profile__section-title">{{ 'profile.changePassword' | translate }}</h3>
+      <form [formRoot]="passwordForm()" (submit)="onPasswordSubmit()" class="flex flex-col gap-12">
+        <p-password [placeholder]="'profile.newPassword' | translate"
+                    [toggleMask]="true"
+                    [ngModel]="passwordForm().password().value()"
+                    (ngModelChange)="passwordForm().password().value.set($event)"
+                    [ngModelOptions]="{standalone: true}"></p-password>
+        @if (passwordForm().password().touched() && passwordForm().password().invalid()) {
+          <p-message severity="error">{{ passwordForm().password().errors()[0].message }}</p-message>
+        }
+
+        <p-password [placeholder]="'profile.repeatNewPassword' | translate"
+                    [toggleMask]="true"
+                    [feedback]="false"
+                    [ngModel]="passwordForm().repeatPassword().value()"
+                    (ngModelChange)="passwordForm().repeatPassword().value.set($event)"
+                    [ngModelOptions]="{standalone: true}"></p-password>
+        @if (passwordForm().repeatPassword().touched() && passwordForm().repeatPassword().invalid()) {
+          <p-message severity="error">{{ passwordForm().repeatPassword().errors()[0].message }}</p-message>
+        }
+
+        <div class="flex flex-row justify-end">
+          <p-button [label]="'profile.changePasswordSubmit' | translate"
+                    icon="pi pi-lock"
+                    type="submit"
+                    [loading]="passwordForm()().submitting()"></p-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

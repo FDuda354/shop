@@ -86,8 +86,8 @@ class BasketServiceTest {
         }
 
         @Test
-        @DisplayName("bumps the quantity instead of duplicating a product already in the basket")
-        void bumpsQuantityForDuplicateProduct() {
+        @DisplayName("adds the requested quantity to a product already in the basket instead of duplicating it")
+        void addsRequestedQuantityForDuplicateProduct() {
             //Given
             var basket = emptyBasket(5L);
             basket.addProduct(BasketItem.builder().product(product(1L)).quantity(1L).build());
@@ -95,11 +95,11 @@ class BasketServiceTest {
             given(productRepo.findById(1L)).willReturn(Optional.of(product(1L)));
 
             //When
-            var result = basketService.addProductToBasket(5L, new BasketProductDto(1L, 1L));
+            var result = basketService.addProductToBasket(5L, new BasketProductDto(1L, 5L));
 
             //Then
             assertThat(result.getItems()).hasSize(1);
-            assertThat(result.getItems().getFirst().getQuantity()).isEqualTo(2L);
+            assertThat(result.getItems().getFirst().getQuantity()).isEqualTo(6L);
         }
 
         @Test

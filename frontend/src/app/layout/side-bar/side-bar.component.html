@@ -1,0 +1,28 @@
+<div class="side-bar flex flex-col gap-4">
+  <a class="side-bar__item flex flex-row items-center gap-8"
+     routerLink="/"
+     [routerLinkActiveOptions]="{exact: true}"
+     routerLinkActive="side-bar__item--active"
+     (click)="navigated.emit()">
+    <i class="pi pi-home"></i>
+    <span>{{ 'sidebar.allProducts' | translate }}</span>
+  </a>
+
+  <div class="side-bar__section-label">{{ 'sidebar.categories' | translate }}</div>
+
+  <ui-content-loader [data]="categories" [contentTemplate]="content">
+    <ng-template #content let-categories>
+      <div class="flex flex-col gap-4">
+        @for (category of categories; track category.id) {
+          <a class="side-bar__item flex flex-row items-center gap-8"
+             [routerLink]="['/category', category.slug]"
+             routerLinkActive="side-bar__item--active"
+             (click)="navigated.emit()">
+            <i class="pi pi-tag"></i>
+            <span>{{ localizedName(category) }}</span>
+          </a>
+        }
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

@@ -3,7 +3,7 @@ package pl.dudios.shopmvn.security.user.service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dudios.shopmvn.common.mail.EmailClientService;
@@ -21,6 +21,7 @@ public class LostPasswordService {
 
     private final UserRepo userRepo;
     private final EmailClientService emailClientService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${app.serviceAddress}")
     private String baseAddress;
@@ -65,7 +66,7 @@ public class LostPasswordService {
         AppUser user = userRepo.findByHash(changePassword.hash())
                 .orElseThrow(() -> new RuntimeException("Invalid link"));
         if (user.getHashDate().plusMinutes(10).isAfter(LocalDateTime.now())) {
-            user.setPassword("{bcrypt}" + new BCryptPasswordEncoder().encode(changePassword.password()));
+            user.setPassword(passwordEncoder.encode(changePassword.password()));
             user.setHash(null);
             user.setHashDate(null);
         } else {

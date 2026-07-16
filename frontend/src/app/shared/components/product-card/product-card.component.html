@@ -1,0 +1,25 @@
+<div class="product-card flex flex-col" (click)="goToDetails()">
+  <div class="product-card__image-wrapper flex items-center justify-center">
+    @if (imageUrl(product().image); as src) {
+      <img [src]="src" [alt]="localizedName(product())" class="product-card__image" loading="lazy"/>
+    } @else {
+      <div class="image-placeholder">
+        <i class="pi pi-image"></i>
+      </div>
+    }
+  </div>
+  <div class="product-card__body flex flex-col gap-4">
+    <span class="product-card__name">{{ localizedName(product()) }}</span>
+    <span class="product-card__description">{{ localizedDescription(product()) }}</span>
+  </div>
+  <div class="product-card__footer flex flex-row items-center justify-between">
+    <span class="product-card__price">{{ product().price | number:'1.2-2' }} {{ product().currency }}</span>
+    <p-button
+      icon="pi pi-shopping-cart"
+      size="small"
+      [rounded]="true"
+      [ariaLabel]="'product.addToBasketAria' | translate"
+      (onClick)="addToBasket($event)"
+    ></p-button>
+  </div>
+</div>

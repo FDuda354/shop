@@ -1,0 +1,38 @@
+.p-error {
+  color: var(--p-red-500);
+  font-size: 13px;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.app-drawer {
+  width: 420px !important;
+
+  @media (max-width: 768px) {
+    width: 100% !important;
+  }
+}
+
+.clear-x-button {
+  cursor: pointer;
+}
+
+// Statyczny placeholder dla produktów bez zdjęcia (zamiast animowanego gifa).
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--p-content-background);
+  color: var(--p-surface-400);
+
+  .pi {
+    font-size: 32px;
+  }
+}
+

@@ -1,0 +1,62 @@
+<div class="flex flex-col gap-24 app-container product-details animation-fadeIn">
+  <ui-content-loader [data]="product" [contentTemplate]="content">
+    <ng-template #content let-product>
+      <div class="flex flex-col gap-24">
+        <div class="flex flex-row gap-24 md-down:flex-col">
+          <div class="product-details__image-wrapper flex--40 flex items-center justify-center">
+            @if (imageUrl(product.image); as src) {
+              <img [src]="src" [alt]="localizedName(product)" class="product-details__image"/>
+            } @else {
+              <div class="image-placeholder product-details__placeholder">
+                <i class="pi pi-image"></i>
+              </div>
+            }
+          </div>
+          <div class="flex--60 flex flex-col gap-12">
+            <h2 class="product-details__name">{{ localizedName(product) }}</h2>
+            <span class="product-details__price">{{ product.price | number:'1.2-2' }} {{ product.currency }}</span>
+            <p class="product-details__description">{{ localizedDescription(product) }}</p>
+            @if (localizedFullDescription(product); as fullDescription) {
+              <p class="product-details__full-description">{{ fullDescription }}</p>
+            }
+            <div class="flex flex-row items-center gap-12 product-details__actions">
+              <p-inputnumber [ngModel]="quantity()"
+                             (ngModelChange)="quantity.set($event ?? 1)"
+                             [min]="1"
+                             [max]="99"
+                             [showButtons]="true"
+                             buttonLayout="horizontal"
+                             inputStyleClass="product-details__quantity-input">
+              </p-inputnumber>
+              <p-button [label]="'product.addToBasket' | translate" icon="pi pi-shopping-cart" (onClick)="addToBasket()"></p-button>
+            </div>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="flex flex-col gap-16">
+          <h3 class="product-details__reviews-title">{{ 'product.reviews' | translate:{count: product.reviews.length} }}</h3>
+
+          @if (product.reviews.length === 0) {
+            <span class="product-details__no-reviews">{{ 'product.noReviews' | translate }}</span>
+          } @else {
+            <div class="flex flex-col gap-12">
+              @for (review of product.reviews; track review.id) {
+                <div class="product-details__review flex flex-col gap-4">
+                  <div class="flex flex-row items-center gap-8">
+                    <p-avatar [label]="review.authorName.charAt(0).toUpperCase()" shape="circle" size="normal"/>
+                    <span class="product-details__review-author">{{ review.authorName }}</span>
+                  </div>
+                  <p class="product-details__review-content">{{ review.content }}</p>
+                </div>
+              }
+            </div>
+          }
+
+          <app-review-form [productId]="product.id" (reviewAdded)="reviewAdded()"></app-review-form>
+        </div>
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

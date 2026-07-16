@@ -1,0 +1,17 @@
+<div class="flex flex-row default-layout">
+  <nav class="default-layout__sidebar">
+    <app-side-bar></app-side-bar>
+  </nav>
+  <div class="flex flex-col default-layout__body">
+    <header class="default-layout__header">
+      <app-header-bar (menuToggle)="toggleDrawer()"></app-header-bar>
+    </header>
+    <main class="default-layout__content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<p-drawer [visible]="drawerVisible()" (visibleChange)="drawerVisible.set($event)" [header]="'header.menu' | translate" position="left">
+  <app-side-bar (navigated)="closeDrawer()"></app-side-bar>
+</p-drawer>

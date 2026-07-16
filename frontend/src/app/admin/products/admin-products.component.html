@@ -1,0 +1,62 @@
+<p-confirmdialog key="deleteConfirmDialog" [baseZIndex]="10000" [style]="{'min-width': '400px'}"></p-confirmdialog>
+
+<div class="flex flex-col gap-16 admin-products animation-fadeIn">
+  <div class="flex flex-row items-center justify-between animation-slideInDown">
+    <h2 class="admin-products__title">{{ 'admin.products.title' | translate }}</h2>
+    <p-button [label]="'admin.products.add' | translate" icon="pi pi-plus" (onClick)="addProduct()"></p-button>
+  </div>
+
+  <ui-content-loader [data]="store.data" [contentTemplate]="content">
+    <ng-template #content let-products>
+      <div class="flex flex-col gap-12">
+        <p-table [value]="products" dataKey="id" class="animation-fadeInUp">
+          <ng-template #header>
+            <tr>
+              <th style="width: 72px;"></th>
+              <th>{{ 'common.name' | translate }}</th>
+              <th>{{ 'admin.products.slug' | translate }}</th>
+              <th>{{ 'admin.products.category' | translate }}</th>
+              <th class="admin-products__price-col">{{ 'common.price' | translate }}</th>
+              <th style="width: 120px;"></th>
+            </tr>
+          </ng-template>
+          <ng-template #body let-product>
+            <tr>
+              <td>
+                @if (imageUrl(product.image); as src) {
+                  <img [src]="src" [alt]="localizedName(product)" class="admin-products__thumb"/>
+                } @else {
+                  <div class="image-placeholder admin-products__thumb">
+                    <i class="pi pi-image"></i>
+                  </div>
+                }
+              </td>
+              <td class="admin-products__name">{{ localizedName(product) }}</td>
+              <td>{{ product.slug }}</td>
+              <td>{{ categoryNames()[product.categoryId] ?? product.categoryId }}</td>
+              <td class="admin-products__price-col">{{ product.price | number:'1.2-2' }} {{ product.currency }}</td>
+              <td>
+                <div class="flex flex-row gap-4 justify-end">
+                  <p-button icon="pi pi-pencil" variant="text" [ariaLabel]="'common.edit' | translate" (onClick)="editProduct(product)"></p-button>
+                  <p-button icon="pi pi-trash" variant="text" severity="danger" [ariaLabel]="'common.delete' | translate" (onClick)="deleteProduct(product)"></p-button>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+
+        @if (store.pageResp().totalElements > 10) {
+          <div class="flex flex-row justify-center">
+            <p-paginator
+              [rows]="store.pageResp().size"
+              [totalRecords]="store.pageResp().totalElements"
+              (onPageChange)="onPageChange($event)"
+              [rowsPerPageOptions]="[10, 25, 50]"
+              [first]="store.pageResp().number * store.pageResp().size"
+            ></p-paginator>
+          </div>
+        }
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

@@ -1,0 +1,73 @@
+<p-confirmdialog key="deleteConfirmDialog" [baseZIndex]="10000" [style]="{'min-width': '400px'}"></p-confirmdialog>
+
+<div class="flex flex-col gap-16 admin-categories animation-fadeIn">
+  <div class="flex flex-row items-center justify-between animation-slideInDown">
+    <h2 class="admin-categories__title">{{ 'admin.categories.title' | translate }}</h2>
+    <p-button [label]="'admin.categories.add' | translate" icon="pi pi-plus" (onClick)="openAdd()"></p-button>
+  </div>
+
+  <ui-content-loader [data]="categories" [contentTemplate]="content">
+    <ng-template #content let-categories>
+      <p-table [value]="categories" dataKey="id" class="animation-fadeInUp">
+        <ng-template #header>
+          <tr>
+            <th>{{ 'common.name' | translate }}</th>
+            <th>{{ 'admin.products.slug' | translate }}</th>
+            <th>{{ 'common.description' | translate }}</th>
+            <th style="width: 120px;"></th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-category>
+          <tr>
+            <td class="admin-categories__name">{{ localizedName(category) }}</td>
+            <td>{{ category.slug }}</td>
+            <td>{{ localizedDescription(category) }}</td>
+            <td>
+              <div class="flex flex-row gap-4 justify-end">
+                <p-button icon="pi pi-pencil" variant="text" [ariaLabel]="'common.edit' | translate" (onClick)="openEdit(category)"></p-button>
+                <p-button icon="pi pi-trash" variant="text" severity="danger" [ariaLabel]="'common.delete' | translate" (onClick)="deleteCategory(category)"></p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+  </ui-content-loader>
+</div>
+
+<p-drawer [visible]="drawerVisible()"
+          (visibleChange)="drawerVisible.set($event)"
+          position="right"
+          styleClass="app-drawer"
+          [header]="(editedId() != null ? 'admin.categories.editTitle' : 'admin.categories.newTitle') | translate">
+  <form [formRoot]="categoryForm()" (submit)="onSubmit()" class="flex flex-col gap-12">
+    <input pInputText [formField]="categoryForm().name" [placeholder]="'admin.categories.namePlaceholder' | translate"/>
+    @if (categoryForm().name().touched() && categoryForm().name().invalid()) {
+      <p-message severity="error">{{ categoryForm().name().errors()[0].message }}</p-message>
+    }
+
+    <input pInputText [formField]="categoryForm().slug" [placeholder]="'admin.categories.slugPlaceholder' | translate"/>
+    @if (categoryForm().slug().touched() && categoryForm().slug().invalid()) {
+      <p-message severity="error">{{ categoryForm().slug().errors()[0].message }}</p-message>
+    }
+
+    <textarea pTextarea [formField]="categoryForm().description" rows="3" [placeholder]="'admin.categories.descriptionPlaceholder' | translate"></textarea>
+
+    <p-divider align="left">{{ 'admin.translationsEn' | translate }}</p-divider>
+
+    <input pInputText [formField]="categoryForm().nameEn" [placeholder]="'admin.categories.nameEnPlaceholder' | translate"/>
+    @if (categoryForm().nameEn().touched() && categoryForm().nameEn().invalid()) {
+      <p-message severity="error">{{ categoryForm().nameEn().errors()[0].message }}</p-message>
+    }
+
+    <textarea pTextarea [formField]="categoryForm().descriptionEn" rows="3" [placeholder]="'admin.categories.descriptionEnPlaceholder' | translate"></textarea>
+
+    <div class="flex flex-row justify-end gap-8">
+      <p-button [label]="'common.cancel' | translate" variant="text" severity="secondary" (onClick)="drawerVisible.set(false)"></p-button>
+      <p-button [label]="(editedId() != null ? 'common.save' : 'common.add') | translate"
+                icon="pi pi-check"
+                type="submit"
+                [loading]="categoryForm()().submitting()"></p-button>
+    </div>
+  </form>
+</p-drawer>

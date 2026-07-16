@@ -1,0 +1,46 @@
+.full-layout {
+  width: 100%;
+  height: 100%;
+  background-color: var(--p-content-background);
+
+  &__header {
+    // Header na pełną szerokość, w kolorze tła dashboardu — bez ramki
+    // i zaokrągleń p-menubara, które robiły z niego "pigułkę" innego koloru.
+    ::ng-deep .p-menubar {
+      background: var(--p-content-background);
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid var(--p-content-border-color);
+      padding: 8px 16px;
+    }
+  }
+
+  &__brand {
+    text-decoration: none;
+    color: var(--p-text-color);
+    margin-right: 16px;
+  }
+
+  &__brand-icon {
+    font-size: 20px;
+    color: var(--p-primary-color);
+  }
+
+  &__brand-name {
+    font-weight: 700;
+  }
+
+  &__theme {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    padding: 16px 4%;
+    overflow: auto;
+  }
+}

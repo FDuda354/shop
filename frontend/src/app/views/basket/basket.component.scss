@@ -1,0 +1,77 @@
+.basket {
+  &__title {
+    margin: 0;
+  }
+
+  &__empty {
+    min-height: 240px;
+    gap: 8px;
+  }
+
+  &__empty-icon {
+    font-size: 48px;
+    color: var(--p-surface-400);
+  }
+
+  &__item {
+    padding: 12px;
+    border: 1px solid var(--p-content-border-color);
+    border-radius: 12px;
+    background: var(--app-panel-bg);
+    flex-wrap: wrap;
+  }
+
+  &__item-image {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: var(--p-content-background);
+    flex: 0 0 64px;
+
+    .pi {
+      font-size: 24px;
+    }
+  }
+
+  &__item-name {
+    font-weight: 700;
+    color: var(--p-text-color);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--p-primary-color);
+    }
+  }
+
+  &__item-price {
+    font-size: 13px;
+    color: var(--p-text-muted-color);
+  }
+
+  &__item-line-price {
+    font-weight: 700;
+    min-width: 96px;
+    text-align: right;
+  }
+
+  // Podsumowanie celowo bez "karty" (ramki/tła) — ma być lekką kolumną
+  // obok listy pozycji, nie kolejnym boksem.
+  &__summary {
+    padding: 0 16px;
+  }
+
+  &__summary-title {
+    margin: 0;
+  }
+
+  &__summary-value {
+    font-weight: 700;
+    color: var(--p-primary-color);
+  }
+}
+
+:host ::ng-deep .basket__quantity-input {
+  width: 56px;
+  text-align: center;
+}

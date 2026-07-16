@@ -1,0 +1,24 @@
+<div class="flex flex-col gap-16 admin-dashboard animation-fadeIn">
+  <h2 class="admin-dashboard__title animation-slideInDown">{{ 'admin.dashboard.title' | translate }}</h2>
+
+  <ui-content-loader [data]="stats" [contentTemplate]="content">
+    <ng-template #content>
+      <div class="flex flex-col gap-16">
+        <div class="flex flex-row gap-16 flex-wrap animation-fadeInUp">
+          <div class="admin-dashboard__stat flex flex-col gap-4">
+            <span class="admin-dashboard__stat-label">{{ 'admin.dashboard.ordersCount' | translate }}</span>
+            <span class="admin-dashboard__stat-value">{{ totalOrders() }}</span>
+          </div>
+          <div class="admin-dashboard__stat flex flex-col gap-4">
+            <span class="admin-dashboard__stat-label">{{ 'admin.dashboard.ordersValue' | translate }}</span>
+            <span class="admin-dashboard__stat-value">{{ totalValue() | number:'1.2-2' }} PLN</span>
+          </div>
+        </div>
+
+        <div class="admin-dashboard__chart animation-fadeIn-delayed">
+          <p-chart type="bar" [data]="chartData()" [options]="chartOptions" height="320px"></p-chart>
+        </div>
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

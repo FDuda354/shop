@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.dudios.shopmvn.security.user.controller.UserProfileUpdate;
@@ -19,14 +19,21 @@ import pl.dudios.shopmvn.security.user.repository.UserRepo;
 public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        AppUser appUser = userRepo.findById(Long.parseLong(userId)).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser appUser = userRepo.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+
         AppUserDetails userDetails = new AppUserDetails(
                 appUser.getUsername(),
                 appUser.getPassword(),
+                appUser.isEnabled(),
+                true,
+                true,
+                true,
                 appUser.getAuthorities().stream().map(userRole -> (GrantedAuthority) userRole::name).toList());
 
         userDetails.setId(appUser.getId());
@@ -53,7 +60,7 @@ public class UserService implements UserDetailsService {
     public void changePassword(Long userId, ChangePassword changePassword) {
         userRepo.findById(userId)
                 .map(user -> {
-                    user.setPassword("{bcrypt}" + new BCryptPasswordEncoder().encode(changePassword.password()));
+                    user.setPassword(passwordEncoder.encode(changePassword.password()));
                     return user;
                 })
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));

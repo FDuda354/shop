@@ -1,5 +1,6 @@
 package pl.dudios.shopmvn.admin.category.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +38,12 @@ public class AdminCategoryController {
     }
 
     @PostMapping("/category")
-    public AdminCategory addCategory(@RequestBody AdminCategoryDto adminCategoryDto) {
+    public AdminCategory addCategory(@RequestBody @Valid AdminCategoryDto adminCategoryDto) {
         return adminCategoryService.addCategory(mapToaAdminCategory(EMPTY_ID, adminCategoryDto));
     }
 
     @PutMapping("/category/{id}")
-    public AdminCategory updateCategory(@PathVariable Long id, @RequestBody AdminCategoryDto adminCategoryDto) {
+    public AdminCategory updateCategory(@PathVariable Long id, @RequestBody @Valid AdminCategoryDto adminCategoryDto) {
         return adminCategoryService.updateCategory(mapToaAdminCategory(id, adminCategoryDto));
     }
 
@@ -56,6 +57,8 @@ public class AdminCategoryController {
                 .id(id)
                 .name(adminCategoryDto.getName())
                 .description(adminCategoryDto.getDescription())
+                .nameEn(adminCategoryDto.getNameEn())
+                .descriptionEn(adminCategoryDto.getDescriptionEn())
                 .slug(slugifySlug(adminCategoryDto.getSlug()))
                 .build();
     }

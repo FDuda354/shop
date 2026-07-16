@@ -43,6 +43,7 @@ public class BasketMapper {
         return ProductItemDto.builder()
                 .id(product.getId())
                 .name(product.getName())
+                .nameEn(product.getNameEn())
                 .currency(product.getCurrency())
                 .image(product.getImage())
                 .price(product.getPrice())

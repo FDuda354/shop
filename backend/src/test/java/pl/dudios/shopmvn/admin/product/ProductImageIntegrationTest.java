@@ -121,8 +121,26 @@ class ProductImageIntegrationTest extends AbstractIntegrationTest {
         };
         var body = new LinkedMultiValueMap<String, Object>();
         body.add("file", file);
-        var headers = new HttpHeaders();
+        var headers = csrfHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         return rest.postForEntity("/profile/upload-image", new HttpEntity<>(body, headers), UploadResponse.class);
+    }
+
+    /**
+     * Mutacje przechodzą przez ochronę CSRF (cookie XSRF-TOKEN + nagłówek
+     * X-XSRF-TOKEN) — tak samo jak robi to frontend. Token zdobywamy dowolnym
+     * GET-em, bo CsrfCookieFilter dokleja cookie do każdej odpowiedzi.
+     */
+    private HttpHeaders csrfHeaders() {
+        var response = rest.getForEntity("/categories", String.class);
+        var token = response.getHeaders().getOrEmpty(HttpHeaders.SET_COOKIE).stream()
+                .filter(cookie -> cookie.startsWith("XSRF-TOKEN="))
+                .map(cookie -> cookie.substring("XSRF-TOKEN=".length(), cookie.indexOf(';')))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No XSRF-TOKEN cookie in response"));
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.COOKIE, "XSRF-TOKEN=" + token);
+        headers.set("X-XSRF-TOKEN", token);
+        return headers;
     }
 }

@@ -1,0 +1,34 @@
+<div class="flex flex-col gap-16 app-container orders animation-fadeIn">
+  <h2 class="orders__title animation-slideInDown">{{ 'orders.title' | translate }}</h2>
+
+  <ui-content-loader [data]="orders" [contentTemplate]="content" [emptyTemplate]="empty">
+    <ng-template #content let-orders>
+      <p-table [value]="orders" dataKey="id" class="animation-fadeInUp">
+        <ng-template #header>
+          <tr>
+            <th>{{ 'common.orderNo' | translate }}</th>
+            <th>{{ 'common.date' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+            <th>{{ 'orders.payment' | translate }}</th>
+            <th class="orders__value-col">{{ 'common.value' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-order>
+          <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.placeDate | date:'dd.MM.yyyy HH:mm' }}</td>
+            <td><p-tag [value]="'orderStatus.' + order.status | translate" [severity]="orderStatusSeverity(order.status)" [rounded]="true"></p-tag></td>
+            <td>{{ order.paymentName }}</td>
+            <td class="orders__value-col">{{ order.grossValue | number:'1.2-2' }} PLN</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </ng-template>
+    <ng-template #empty>
+      <div class="flex flex-col items-center justify-center orders__empty">
+        <i class="pi pi-inbox orders__empty-icon"></i>
+        <h4>{{ 'orders.empty' | translate }}</h4>
+      </div>
+    </ng-template>
+  </ui-content-loader>
+</div>

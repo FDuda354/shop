@@ -1,0 +1,39 @@
+<div class="auth-page flex items-center justify-center animation-fadeIn">
+  <div class="auth-page__card flex flex-col gap-16 animation-fadeInUp">
+    <div class="flex flex-col items-center gap-4">
+      <i class="pi pi-shopping-bag auth-page__logo"></i>
+      <h2 class="auth-page__title">Dudios Shop</h2>
+      <span class="auth-page__subtitle">{{ 'auth.loginTitle' | translate }}</span>
+    </div>
+
+    <form [formRoot]="loginForm" (submit)="onSubmit()" class="flex flex-col gap-12">
+      <p-iconfield>
+        <input pInputText [pAutoFocus]="true" [formField]="loginForm.username" [placeholder]="'auth.email' | translate"/>
+        <p-inputicon class="pi pi-user"/>
+      </p-iconfield>
+      @if (loginForm.username().touched() && loginForm.username().invalid()) {
+        <p-message severity="error">{{ loginForm.username().errors()[0].message }}</p-message>
+      }
+
+      <p-password [placeholder]="'auth.password' | translate"
+                  [toggleMask]="true"
+                  [feedback]="false"
+                  [ngModel]="loginForm.password().value()"
+                  (ngModelChange)="loginForm.password().value.set($event)"
+                  [ngModelOptions]="{standalone: true}"></p-password>
+      @if (loginForm.password().touched() && loginForm.password().invalid()) {
+        <p-message severity="error">{{ loginForm.password().errors()[0].message }}</p-message>
+      }
+
+      <p-button [label]="'auth.login' | translate"
+                type="submit"
+                styleClass="auth-page__submit"
+                [loading]="loginForm().submitting()"></p-button>
+
+      <div class="flex flex-row items-center justify-between">
+        <p-button [label]="'common.backToShop' | translate" variant="text" severity="secondary" routerLink="/"></p-button>
+        <p-button [label]="'auth.register' | translate" variant="text" routerLink="/register"></p-button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,50 @@
+@if (isLoading()) {
+  <ng-template [ngTemplateOutlet]="loaderState"></ng-template>
+} @else if (data().error()) {
+  <ng-template [ngTemplateOutlet]="errorState"></ng-template>
+} @else if (isEmpty()) {
+  <ng-template [ngTemplateOutlet]="emptyState"></ng-template>
+} @else {
+  <ng-template
+    [ngTemplateOutlet]="contentTemplate()"
+    [ngTemplateOutletContext]="{ $implicit: readyData() }"
+  ></ng-template>
+}
+
+<ng-template #loaderState>
+  @if (loaderTemplate()) {
+    <ng-template [ngTemplateOutlet]="loaderTemplate()"></ng-template>
+  } @else {
+    <div class="flex items-center justify-center content-loader__spinner">
+      <p-progress-spinner [ariaLabel]="'loader.loading' | translate" strokeWidth="4"/>
+    </div>
+  }
+</ng-template>
+
+<ng-template #errorState>
+  @if (errorTemplate()) {
+    <ng-template [ngTemplateOutlet]="errorTemplate()"></ng-template>
+  } @else {
+    <div class="flex flex-col items-center justify-center empty-or-error-container">
+      <i class="pi pi-exclamation-triangle empty-or-error-container__icon"></i>
+      <div class="empty-or-error-container__title">{{ 'loader.errorTitle' | translate }}</div>
+      <div class="empty-or-error-container__text">
+        {{ 'loader.errorText' | translate }}
+      </div>
+    </div>
+  }
+</ng-template>
+
+<ng-template #emptyState>
+  @if (emptyTemplate()) {
+    <ng-template [ngTemplateOutlet]="emptyTemplate()"></ng-template>
+  } @else {
+    <div class="flex flex-col items-center justify-center empty-or-error-container">
+      <i class="pi pi-inbox empty-or-error-container__icon"></i>
+      <div class="empty-or-error-container__title">{{ 'loader.emptyTitle' | translate }}</div>
+      <div class="empty-or-error-container__text">
+        {{ 'loader.emptyText' | translate }}
+      </div>
+    </div>
+  }
+</ng-template>

@@ -1,0 +1,17 @@
+.admin-orders {
+  &__title {
+    margin: 0;
+  }
+
+  &__row {
+    cursor: pointer;
+  }
+
+  &__value-col {
+    text-align: right;
+  }
+}
+
+:host ::ng-deep .admin-orders__status-select {
+  min-width: 160px;
+}

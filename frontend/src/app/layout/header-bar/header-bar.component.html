@@ -1,0 +1,46 @@
+<div class="header-bar flex flex-row items-center justify-between gap-12">
+  <div class="flex flex-row items-center gap-8">
+    <p-button class="header-bar__mobile-menu"
+              icon="pi pi-bars"
+              variant="text"
+              severity="secondary"
+              [ariaLabel]="'header.menu' | translate"
+              (onClick)="menuToggle.emit()"></p-button>
+    <a routerLink="/" class="header-bar__brand flex flex-row items-center gap-8">
+      <i class="pi pi-shopping-bag header-bar__brand-icon"></i>
+      <span class="header-bar__brand-name">Dudios&nbsp;Shop</span>
+    </a>
+  </div>
+
+  <div class="flex flex-row items-center gap-12">
+    <app-language-switcher></app-language-switcher>
+
+    <div class="header-bar__theme flex items-center gap-8">
+      <i class="pi pi-sun"></i>
+      <p-toggleswitch [ngModel]="themeService.dark()" (ngModelChange)="themeService.toggle()"/>
+      <i class="pi pi-moon"></i>
+    </div>
+
+    <p-overlaybadge [value]="basketService.itemCount()" [badgeDisabled]="!basketService.hasItems()">
+      <p-button icon="pi pi-shopping-cart"
+                variant="text"
+                severity="secondary"
+                [ariaLabel]="'header.basket' | translate"
+                (onClick)="goToBasket()"></p-button>
+    </p-overlaybadge>
+
+    @if (authService.currentUser(); as user) {
+      <div class="header-bar__user flex flex-row items-center gap-8" (click)="userMenu.toggle($event)">
+        <p-avatar [label]="user.username.charAt(0).toUpperCase()" shape="circle"/>
+        <span class="header-bar__username">{{ user.username }}</span>
+        <i class="pi pi-angle-down"></i>
+      </div>
+      <p-menu #userMenu [popup]="true" [model]="userMenuItems()"></p-menu>
+    } @else {
+      <p-button [label]="'header.login' | translate"
+                icon="pi pi-sign-in"
+                variant="text"
+                (onClick)="goToLogin()"></p-button>
+    }
+  </div>
+</div>

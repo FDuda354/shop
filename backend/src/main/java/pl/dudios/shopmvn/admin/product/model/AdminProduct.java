@@ -29,6 +29,10 @@ public class AdminProduct {
     private String name;
     private String description;
     private String fullDescription;
+    // Wersja angielska (opcjonalna) — null/pusty = frontend pokazuje polską.
+    private String nameEn;
+    private String descriptionEn;
+    private String fullDescriptionEn;
     private Long categoryId;
     private BigDecimal price;
     @Enumerated(EnumType.STRING)

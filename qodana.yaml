@@ -1,0 +1,26 @@
+#-------------------------------------------------------------------------------#
+#               Qodana analysis is configured by qodana.yaml file               #
+#             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
+#-------------------------------------------------------------------------------#
+# Ten plik trzyma WYŁĄCZNIE nadpisania specyficzne dla shop. Reguły zespołowe
+# (tuning profilu, licencje, quality gate, wspólne excludes) mieszkają w
+# globalnej konfiguracji zespołu DUDIOS — repo qodana-global-configs →
+# base/qodana.yaml (id: dudios).
+#-------------------------------------------------------------------------------#
+version: "1.0"
+linter: jetbrains/qodana-jvm:latest
+projectJDK: "25"
+exclude:
+  - name: All
+    paths:
+      - frontend
+      - backend/build
+      # Migracje (SQL-owe i javowe seedy) to dane, nie logika do analizy.
+      - backend/src/main/resources/db/migration
+      - backend/src/main/java/db/migration
+  # False positives: wartości to placeholdery ${ENV_VAR} albo dane testowe
+  # (Testcontainers), nie prawdziwe sekrety.
+  - name: HardcodedPasswords
+    paths:
+      - backend/src/main/resources/application.yml
+      - backend/src/test/resources/application-test.yml

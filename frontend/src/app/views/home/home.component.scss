@@ -1,0 +1,11 @@
+.home {
+  &__title {
+    margin: 0;
+  }
+
+  &__grid {
+    @media (min-width: 992px) {
+      justify-content: flex-start;
+    }
+  }
+}

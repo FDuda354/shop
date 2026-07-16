@@ -1,0 +1,26 @@
+.category {
+  &__title {
+    margin: 0;
+  }
+
+  &__description {
+    margin: 4px 0 0;
+    color: var(--p-text-muted-color);
+  }
+
+  &__empty {
+    min-height: 200px;
+  }
+
+  &__empty-icon {
+    font-size: 48px;
+    color: var(--p-surface-400);
+    margin-bottom: 16px;
+  }
+
+  &__grid {
+    @media (min-width: 992px) {
+      justify-content: flex-start;
+    }
+  }
+}

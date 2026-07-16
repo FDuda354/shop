@@ -25,6 +25,12 @@ public class AdminProductDto {
     private String description;
 
     private String fullDescription;
+    // Wersja angielska — opcjonalna (bez @NotBlank), limity jak dla polskiej.
+    @Length(max = 255)
+    private String nameEn;
+    @Length(max = 100)
+    private String descriptionEn;
+    private String fullDescriptionEn;
     @NotNull
     private Long categoryId;
     @NotNull

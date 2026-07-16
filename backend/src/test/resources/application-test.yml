@@ -1,6 +1,6 @@
 # Profil używany przez klasy *IntegrationTest. URL/user/hasło Postgresa wpina
 # @DynamicPropertySource z Testcontainera, więc nadpisujemy tylko te wartości,
-# których application.yml oczekuje ze środowiska (MAIL_PASSWORD, JWT_SECRET).
+# których application.yml oczekuje ze środowiska (MAIL_PASSWORD).
 spring:
   jpa:
     show-sql: false
@@ -9,10 +9,6 @@ spring:
     port: 1025
     username: test
     password: test
-
-jwt:
-  expirationTime: 2592000000
-  secret: test-secret-for-integration-tests-only
 
 logging:
   level:

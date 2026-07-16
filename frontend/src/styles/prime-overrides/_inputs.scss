@@ -1,0 +1,33 @@
+.p-iconfield {
+  width: 100%;
+
+  input.p-inputtext {
+    width: 100%;
+  }
+}
+
+.p-password,
+.p-password input {
+  width: 100%;
+}
+
+// Pełna szerokość tylko w formularzach — luzem (ilość przy produkcie,
+// w koszyku) kontrolki mają trzymać naturalny rozmiar, nie spychać sąsiadów.
+form .p-select,
+form .p-inputnumber,
+textarea.p-textarea {
+  width: 100%;
+}
+
+// Signal forms bindują invalid do inputów PrimeNG natychmiast (pole required
+// jest "invalid" zanim użytkownik czegokolwiek dotknie). Czerwoną ramkę
+// pokazujemy dopiero po dotknięciu pola (klasa field-touched pochodzi
+// z provideSignalFormsConfig w AppModule).
+input.p-inputtext.p-invalid:not(.field-touched),
+textarea.p-textarea.p-invalid:not(.field-touched) {
+  border-color: var(--p-inputtext-border-color);
+
+  &::placeholder {
+    color: var(--p-inputtext-placeholder-color);
+  }
+}

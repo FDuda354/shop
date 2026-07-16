@@ -1,0 +1,47 @@
+:host {
+  display: flex;
+  // Kolumna, nie wiersz: projektowana treść jest flex-dzieckiem hosta i przy
+  // kierunku row zwężała się do szerokości zawartości (align-items: stretch
+  // rozciąga tylko w osi poprzecznej) — tabele/obrazki robiły się wąskie.
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 100%;
+}
+
+.content-loader {
+  &__spinner {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 200px;
+  }
+}
+
+.empty-or-error-container {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 200px;
+  padding: 24px;
+
+  &__icon {
+    font-size: 48px;
+    color: var(--p-surface-400);
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 32px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  &__text {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+}

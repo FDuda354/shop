@@ -1,0 +1,14 @@
+// Selekt "ile na stronę" ma być wąski i siedzieć po prawej stronie pasków,
+// a nie zawijać się pod numerami stron (globalny width:100% selectów w formach
+// nie może go dotyczyć).
+.p-paginator {
+  flex-wrap: nowrap;
+  gap: 8px;
+
+  .p-select {
+    width: auto;
+    min-width: 5.5rem;
+    margin-left: 8px;
+    order: 99;
+  }
+}
