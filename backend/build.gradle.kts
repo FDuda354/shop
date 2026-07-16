@@ -113,7 +113,7 @@ jacoco {
 // z raportu, jak i z bramki jakości (wzór z debtor, dopasowany do pakietów
 // shop: klasy konfiguracyjne żyją w security/ i common/mail/, nie w config/).
 val coverageExcludes = listOf(
-    "pl/dudios/shopmvn/ShopmvnApplication.class",
+    "pl/dudios/shop/ShopmvnApplication.class",
     "**/model/**",
     "**/dto/**",
     "**/*Config.class",
