@@ -1,5 +1,6 @@
 package pl.dudios.shop.order.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,16 +26,13 @@ public class OrderController {
     private final PaymentService paymentService;
 
     @PostMapping("/order")
-    public OrderSummary createOrder(@RequestBody OrderDto orderDto, @AuthenticationPrincipal AppUserDetails user) {
+    public OrderSummary createOrder(@RequestBody @Valid OrderDto orderDto, @AuthenticationPrincipal AppUserDetails user) {
         return orderService.createOrder(orderDto, user != null ? user.getId() : null);
     }
 
     @GetMapping("/order/initOrder")
     public InitOrder initOrder() {
-        return InitOrder.builder()
-                .shipments(shipmentService.getShipments())
-                .payments(paymentService.getPayments())
-                .build();
+        return new InitOrder(shipmentService.getShipments(), paymentService.getPayments());
     }
 
     @GetMapping("/orders")

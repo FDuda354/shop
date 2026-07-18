@@ -102,17 +102,17 @@ public class AdminProductController {
     private AdminProduct mapToAdminProduct(AdminProductDto adminProductDto, Long id) {
         return AdminProduct.builder()
                 .id(id)
-                .name(adminProductDto.getName())
-                .price(adminProductDto.getPrice())
-                .categoryId(adminProductDto.getCategoryId())
-                .description(adminProductDto.getDescription())
-                .fullDescription(Optional.ofNullable(adminProductDto.getFullDescription()).orElse(""))
-                .nameEn(adminProductDto.getNameEn())
-                .descriptionEn(adminProductDto.getDescriptionEn())
-                .fullDescriptionEn(adminProductDto.getFullDescriptionEn())
-                .currency(adminProductDto.getCurrency())
-                .image(adminProductDto.getImage())
-                .slug(slugifySlug(adminProductDto.getSlug()))
+                .name(adminProductDto.name())
+                .price(adminProductDto.price())
+                .categoryId(adminProductDto.categoryId())
+                .description(adminProductDto.description())
+                .fullDescription(Optional.ofNullable(adminProductDto.fullDescription()).orElse(""))
+                .nameEn(adminProductDto.nameEn())
+                .descriptionEn(adminProductDto.descriptionEn())
+                .fullDescriptionEn(adminProductDto.fullDescriptionEn())
+                .currency(adminProductDto.currency())
+                .image(adminProductDto.image())
+                .slug(slugifySlug(adminProductDto.slug()))
                 .build();
     }
 

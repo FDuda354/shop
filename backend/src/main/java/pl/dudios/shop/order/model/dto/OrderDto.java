@@ -1,32 +1,20 @@
 package pl.dudios.shop.order.model.dto;
 
-import lombok.Getter;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-@Getter
-public class OrderDto {
-
-    @NotBlank
-    private String firstName;
-    @NotBlank
-    private String lastName;
-    @NotBlank
-    private String street;
-    @NotBlank
-    private String zipCode;
-    @NotBlank
-    private String city;
-    @NotBlank
-    @Email
-    private String email;
-    @NotBlank
-    private String phone;
-    @NotBlank
-    private Long basketId;
-    @NotBlank
-    private Long shipmentId;
-    @NotBlank
-    private Long paymentId;
+public record OrderDto(
+        @NotBlank String firstName,
+        @NotBlank String lastName,
+        @NotBlank String street,
+        @NotBlank String zipCode,
+        @NotBlank String city,
+        @NotBlank @Email String email,
+        @NotBlank String phone,
+        // @NotNull, nie @NotBlank: pola liczbowe (NotBlank dziala tylko na CharSequence).
+        @NotNull Long basketId,
+        @NotNull Long shipmentId,
+        @NotNull Long paymentId
+) {
 }

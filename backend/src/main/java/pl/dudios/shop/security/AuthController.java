@@ -20,6 +20,8 @@ import pl.dudios.shop.security.model.RegisterRequest;
 import pl.dudios.shop.security.user.model.AppUserDetails;
 import pl.dudios.shop.security.user.model.dto.UserDto;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("api/auth")
 @RequiredArgsConstructor
@@ -39,7 +41,7 @@ public class AuthController {
 
         establishSession(authentication, request, response);
 
-        return ResponseEntity.ok(UserDto.from((AppUserDetails) authentication.getPrincipal()));
+        return ResponseEntity.ok(UserDto.from((AppUserDetails) Objects.requireNonNull(authentication.getPrincipal())));
     }
 
     @PostMapping("/register")
@@ -50,7 +52,7 @@ public class AuthController {
 
         establishSession(authentication, request, response);
 
-        return ResponseEntity.ok(UserDto.from((AppUserDetails) authentication.getPrincipal()));
+        return ResponseEntity.ok(UserDto.from((AppUserDetails) Objects.requireNonNull(authentication.getPrincipal())));
     }
 
     @GetMapping("/me")

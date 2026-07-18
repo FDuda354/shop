@@ -41,9 +41,9 @@ public class OrderService {
 
     @Transactional
     public OrderSummary createOrder(OrderDto orderDto, Long userId) {
-        Basket basket = basketRepo.findById(orderDto.getBasketId()).orElseThrow();
-        Shipment shipment = shipmentRepo.findById(orderDto.getShipmentId()).orElseThrow();
-        Payment payment = paymentRepo.findById(orderDto.getPaymentId()).orElseThrow();
+        Basket basket = basketRepo.findById(orderDto.basketId()).orElseThrow();
+        Shipment shipment = shipmentRepo.findById(orderDto.shipmentId()).orElseThrow();
+        Payment payment = paymentRepo.findById(orderDto.paymentId()).orElseThrow();
         Order newOrder = orderRepo.save(createNewOrder(orderDto, basket, shipment, payment, userId));
 
         saveOrderRows(basket, newOrder.getId(), shipment);
@@ -60,8 +60,8 @@ public class OrderService {
     }
 
     private void clearBasket(OrderDto orderDto) {
-        basketItemRepo.deleteByBasketId(orderDto.getBasketId());
-        basketRepo.deleteBasketById(orderDto.getBasketId());
+        basketItemRepo.deleteByBasketId(orderDto.basketId());
+        basketRepo.deleteBasketById(orderDto.basketId());
     }
 
 

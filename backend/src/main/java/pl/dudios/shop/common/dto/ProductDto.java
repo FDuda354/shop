@@ -1,22 +1,19 @@
 package pl.dudios.shop.common.dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
 @Builder
-public class ProductDto {
-    private Long id;
-    private String name;
-    private String description;
-    private String nameEn;
-    private String descriptionEn;
-    private BigDecimal price;
-    private String currency;
-    private String image;
-    private String slug;
+public record ProductDto(
+        Long id,
+        String name,
+        String description,
+        String nameEn,
+        String descriptionEn,
+        BigDecimal price,
+        String currency,
+        String image,
+        String slug
+) {
 }

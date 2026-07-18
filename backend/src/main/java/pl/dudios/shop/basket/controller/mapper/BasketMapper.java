@@ -56,9 +56,7 @@ public class BasketMapper {
     }
 
     private static SummaryDto mapToSummary(List<BasketItem> items) {
-        return SummaryDto.builder()
-                .grossValue(calculateTotalPrice(items))
-                .build();
+        return new SummaryDto(calculateTotalPrice(items));
     }
 
     private static BigDecimal calculateTotalPrice(List<BasketItem> items) {

@@ -13,4 +13,4 @@ spring:
 logging:
   level:
     root: WARN
-    pl.dudios.shopmvn: INFO
+    pl.dudios.shop: INFO

@@ -2,14 +2,28 @@
 #               Qodana analysis is configured by qodana.yaml file               #
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
-# Ten plik trzyma WYŁĄCZNIE nadpisania specyficzne dla shop. Reguły zespołowe
-# (tuning profilu, licencje, quality gate, wspólne excludes) mieszkają w
-# globalnej konfiguracji zespołu DUDIOS — repo qodana-global-configs →
-# base/qodana.yaml (id: dudios).
+# Ten plik jest JEDYNYM aktywnym źródłem konfiguracji Qodany dla shop.
+# Globalne konfiguracje (repo qodana-global-configs) wymagają planu Qodana
+# Ultimate Plus — na naszym planie Ultimate skan ich NIE ładuje.
 #-------------------------------------------------------------------------------#
 version: "1.0"
 linter: jetbrains/qodana-jvm:latest
 projectJDK: "25"
+
+# Pokrycie: total >= 60% (failureConditions), bez szumu per klasa/metoda.
+# JvmCoverageInspection musi zostać WŁĄCZONA (liczy statystykę total dla
+# Qodana Cloud i bramy testCoverageThresholds) — wyciszamy ją wyzerowanymi
+# progami, NIE przez exclude (exclude = "Code coverage: Not set").
+profile:
+  base:
+    name: qodana.starter
+  inspections:
+    - inspection: JvmCoverageInspection
+      options:
+        classThreshold: 0
+        methodThreshold: 0
+        warnMissingCoverage: false
+
 exclude:
   - name: All
     paths:
@@ -24,3 +38,7 @@ exclude:
     paths:
       - backend/src/main/resources/application.yml
       - backend/src/test/resources/application-test.yml
+
+failureConditions:
+  testCoverageThresholds:
+    total: 60

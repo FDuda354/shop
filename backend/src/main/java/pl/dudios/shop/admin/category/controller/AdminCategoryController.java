@@ -55,11 +55,11 @@ public class AdminCategoryController {
     private AdminCategory mapToaAdminCategory(Long id, AdminCategoryDto adminCategoryDto) {
         return AdminCategory.builder()
                 .id(id)
-                .name(adminCategoryDto.getName())
-                .description(adminCategoryDto.getDescription())
-                .nameEn(adminCategoryDto.getNameEn())
-                .descriptionEn(adminCategoryDto.getDescriptionEn())
-                .slug(slugifySlug(adminCategoryDto.getSlug()))
+                .name(adminCategoryDto.name())
+                .description(adminCategoryDto.description())
+                .nameEn(adminCategoryDto.nameEn())
+                .descriptionEn(adminCategoryDto.descriptionEn())
+                .slug(slugifySlug(adminCategoryDto.slug()))
                 .build();
     }
 

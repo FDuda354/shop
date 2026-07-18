@@ -1,18 +1,14 @@
 package pl.dudios.shop.basket.controller.dto;
 
 import lombok.Builder;
-import lombok.Getter;
 
 import java.math.BigDecimal;
 
-@Getter
 @Builder
-public class BasketSummaryItemDto {
-
-    private Long id;
-    private Long quantity;
-    private BigDecimal linePrice;
-
-    //TODO: use ProductDto in common module
-    private ProductItemDto product;
+public record BasketSummaryItemDto(
+        Long id,
+        Long quantity,
+        BigDecimal linePrice,
+        ProductItemDto product
+) {
 }

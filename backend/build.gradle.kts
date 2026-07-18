@@ -121,7 +121,8 @@ val coverageExcludes = listOf(
 )
 
 tasks.named<JacocoReport>("jacocoTestReport") {
-    dependsOn(tasks.named("test"), tasks.named("integrationTest"))
+    dependsOn(tasks.named("compileJava"))
+    mustRunAfter(tasks.named("test"), tasks.named("integrationTest"))
     executionData.setFrom(fileTree(layout.buildDirectory).include("jacoco/*.exec"))
     classDirectories.setFrom(
         files(classDirectories.files.map {

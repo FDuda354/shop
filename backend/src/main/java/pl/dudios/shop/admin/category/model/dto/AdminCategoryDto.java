@@ -1,23 +1,14 @@
 package pl.dudios.shop.admin.category.model.dto;
 
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
-import jakarta.validation.constraints.NotBlank;
-
-@Getter
-public class AdminCategoryDto {
-
-    @NotBlank
-    @Length(min = 3, max = 255)
-    private String name;
-    private String description;
-    // Wersja angielska — opcjonalna.
-    @Length(max = 255)
-    private String nameEn;
-    private String descriptionEn;
-    @NotBlank
-    @Length(min = 3, max = 255)
-    private String slug;
-
+public record AdminCategoryDto(
+        @NotBlank @Length(min = 3, max = 255) String name,
+        String description,
+        // Wersja angielska — opcjonalna.
+        @Length(max = 255) String nameEn,
+        String descriptionEn,
+        @NotBlank @Length(min = 3, max = 255) String slug
+) {
 }
