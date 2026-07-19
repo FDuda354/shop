@@ -1,11 +1,11 @@
 <div class="header-bar flex flex-row items-center justify-between gap-12">
   <div class="flex flex-row items-center gap-8">
-    <p-button class="header-bar__mobile-menu"
-              icon="pi pi-bars"
-              variant="text"
-              severity="secondary"
-              [ariaLabel]="'header.menu' | translate"
-              (onClick)="menuToggle.emit()"></p-button>
+    <button pButton type="button" class="header-bar__mobile-menu"
+            iconOnly
+            variant="text"
+            severity="secondary"
+            [attr.aria-label]="'header.menu' | translate"
+            (click)="menuToggle.emit()"><i class="pi pi-bars"></i></button>
     <a routerLink="/" class="header-bar__brand flex flex-row items-center gap-8">
       <i class="pi pi-shopping-bag header-bar__brand-icon"></i>
       <span class="header-bar__brand-name">Dudios&nbsp;Shop</span>
@@ -22,11 +22,12 @@
     </div>
 
     <p-overlaybadge [value]="basketService.itemCount()" [badgeDisabled]="!basketService.hasItems()">
-      <p-button icon="pi pi-shopping-cart"
-                variant="text"
-                severity="secondary"
-                [ariaLabel]="'header.basket' | translate"
-                (onClick)="goToBasket()"></p-button>
+      <button pButton type="button"
+              iconOnly
+              variant="text"
+              severity="secondary"
+              [attr.aria-label]="'header.basket' | translate"
+              (click)="goToBasket()"><i class="pi pi-shopping-cart"></i></button>
     </p-overlaybadge>
 
     @if (authService.currentUser(); as user) {
@@ -37,10 +38,9 @@
       </div>
       <p-menu #userMenu [popup]="true" [model]="userMenuItems()"></p-menu>
     } @else {
-      <p-button [label]="'header.login' | translate"
-                icon="pi pi-sign-in"
-                variant="text"
-                (onClick)="goToLogin()"></p-button>
+      <button pButton type="button"
+              variant="text"
+              (click)="goToLogin()"><i class="pi pi-sign-in"></i>{{ 'header.login' | translate }}</button>
     }
   </div>
 </div>

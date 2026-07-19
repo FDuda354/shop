@@ -1,18 +1,18 @@
 import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {FormField, FormRoot} from '@angular/forms/signals';
 import {RouterModule} from '@angular/router';
 import {TranslatePipe} from '@ngx-translate/core';
 
 import {InputText} from 'primeng/inputtext';
-import {Button} from 'primeng/button';
+import {ButtonDirective} from 'primeng/button';
 import {Avatar} from 'primeng/avatar';
 import {Menu} from 'primeng/menu';
 import {Menubar} from 'primeng/menubar';
 import {Checkbox} from 'primeng/checkbox';
 import {InputNumber} from 'primeng/inputnumber';
-import {Password} from 'primeng/password';
+import {InputPassword} from 'primeng/inputpassword';
 import {Toast} from 'primeng/toast';
 import {Paginator} from 'primeng/paginator';
 import {TableModule} from 'primeng/table';
@@ -20,7 +20,6 @@ import {Chip} from 'primeng/chip';
 import {Message} from 'primeng/message';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {ToggleSwitch} from 'primeng/toggleswitch';
-import {Image} from 'primeng/image';
 import {Select} from 'primeng/select';
 import {Textarea} from 'primeng/textarea';
 import {Tag} from 'primeng/tag';
@@ -46,19 +45,20 @@ import {LanguageSwitcherComponent} from './components/language-switcher/language
   ],
   imports: [
     CommonModule,
+    NgOptimizedImage,
     RouterModule,
     FormsModule,
     TranslatePipe,
     FormField,
     FormRoot,
     InputText,
-    Button,
+    ButtonDirective,
     Avatar,
     Menu,
     Menubar,
     Checkbox,
     InputNumber,
-    Password,
+    InputPassword,
     Toast,
     Paginator,
     TableModule,
@@ -66,7 +66,6 @@ import {LanguageSwitcherComponent} from './components/language-switcher/language
     Message,
     ConfirmDialog,
     ToggleSwitch,
-    Image,
     Select,
     Textarea,
     Tag,
@@ -82,19 +81,20 @@ import {LanguageSwitcherComponent} from './components/language-switcher/language
   ],
   exports: [
     CommonModule,
+    NgOptimizedImage,
     RouterModule,
     FormsModule,
     TranslatePipe,
     FormField,
     FormRoot,
     InputText,
-    Button,
+    ButtonDirective,
     Avatar,
     Menu,
     Menubar,
     Checkbox,
     InputNumber,
-    Password,
+    InputPassword,
     Toast,
     Paginator,
     TableModule,
@@ -102,7 +102,6 @@ import {LanguageSwitcherComponent} from './components/language-switcher/language
     Message,
     ConfirmDialog,
     ToggleSwitch,
-    Image,
     Select,
     Textarea,
     Tag,

@@ -22,6 +22,8 @@ export class LoginComponent {
 
   readonly loginModel = signal({username: '', password: ''});
 
+  readonly passwordMasked = signal(true);
+
   readonly loginForm = form(this.loginModel, (f) => {
     required(f.username, {message: this.msg('validation.emailRequired')});
     required(f.password, {message: this.msg('validation.passwordRequired')});

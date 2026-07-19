@@ -5,7 +5,7 @@
         <div class="flex flex-row gap-24 md-down:flex-col">
           <div class="product-details__image-wrapper flex--40 flex items-center justify-center">
             @if (imageUrl(product.image); as src) {
-              <img [src]="src" [alt]="localizedName(product)" class="product-details__image"/>
+              <img [ngSrc]="src" width="320" height="320" [alt]="localizedName(product)" class="product-details__image"/>
             } @else {
               <div class="image-placeholder product-details__placeholder">
                 <i class="pi pi-image"></i>
@@ -28,7 +28,7 @@
                              buttonLayout="horizontal"
                              inputStyleClass="product-details__quantity-input">
               </p-inputnumber>
-              <p-button [label]="'product.addToBasket' | translate" icon="pi pi-shopping-cart" (onClick)="addToBasket()"></p-button>
+              <button pButton type="button" (click)="addToBasket()"><i class="pi pi-shopping-cart"></i>{{ 'product.addToBasket' | translate }}</button>
             </div>
           </div>
         </div>

@@ -22,6 +22,9 @@ export class RegisterComponent {
 
   readonly registerModel = signal({username: '', password: '', confirmPassword: ''});
 
+  readonly passwordMasked = signal(true);
+  readonly confirmPasswordMasked = signal(true);
+
   readonly registerForm = form(this.registerModel, (f) => {
     required(f.username, {message: this.msg('validation.emailRequired')});
     email(f.username, {message: this.msg('validation.emailInvalid')});

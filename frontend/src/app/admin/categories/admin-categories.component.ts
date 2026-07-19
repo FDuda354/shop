@@ -2,11 +2,12 @@ import {Component, inject, Injector, signal} from '@angular/core';
 import {rxResource} from '@angular/core/rxjs-interop';
 import {firstValueFrom} from 'rxjs';
 import {ConfirmationService} from 'primeng/api';
-import {form, maxLength, minLength, required, submit} from '@angular/forms/signals';
+import {form, maxLength, submit} from '@angular/forms/signals';
 import {TranslateService} from '@ngx-translate/core';
 import {AdminCategoryService} from '../../services/admin/admin-category.service';
 import {NotificationService} from '../../services/notification.service';
 import {validationMessages} from '../../utils/validation-message';
+import {nameAndSlugRules} from '../../utils/form-rules';
 import {AdminCategory} from '../../models/admin';
 import {localizedDescription, localizedName} from '../../utils/localized';
 
@@ -44,12 +45,7 @@ export class AdminCategoriesComponent {
 
   private buildForm() {
     return form(this.categoryModel, (f) => {
-      required(f.name, {message: this.msg('validation.nameRequired')});
-      minLength(f.name, 3, {message: this.msg('validation.nameMinLength')});
-      maxLength(f.name, 255, {message: this.msg('validation.nameMaxLength')});
-      required(f.slug, {message: this.msg('validation.slugRequired')});
-      minLength(f.slug, 3, {message: this.msg('validation.slugMinLength')});
-      maxLength(f.slug, 255, {message: this.msg('validation.slugMaxLength')});
+      nameAndSlugRules(f.name, f.slug, this.msg);
       // Wersja angielska opcjonalna — tylko limit długości.
       maxLength(f.nameEn, 255, {message: this.msg('validation.nameMaxLength')});
     }, {injector: this.injector});

@@ -11,6 +11,7 @@ import {AdminCategory, AdminProduct} from '../../../models/admin';
 import {imageUrl} from '../../../utils/image-url';
 import {localizedName} from '../../../utils/localized';
 import {validationMessages} from '../../../utils/validation-message';
+import {nameAndSlugRules} from '../../../utils/form-rules';
 
 @Component({
   selector: 'app-admin-manage-product',
@@ -72,12 +73,7 @@ export class AdminManageProductComponent {
   readonly currency = signal<string>('PLN');
 
   readonly productForm = form(this.productModel, (f) => {
-    required(f.name, {message: this.msg('validation.nameRequired')});
-    minLength(f.name, 3, {message: this.msg('validation.nameMinLength')});
-    maxLength(f.name, 255, {message: this.msg('validation.nameMaxLength')});
-    required(f.slug, {message: this.msg('validation.slugRequired')});
-    minLength(f.slug, 3, {message: this.msg('validation.slugMinLength')});
-    maxLength(f.slug, 255, {message: this.msg('validation.slugMaxLength')});
+    nameAndSlugRules(f.name, f.slug, this.msg);
     required(f.description, {message: this.msg('validation.descriptionRequired')});
     minLength(f.description, 3, {message: this.msg('validation.descriptionMinLength')});
     maxLength(f.description, 100, {message: this.msg('validation.descriptionMaxLength')});

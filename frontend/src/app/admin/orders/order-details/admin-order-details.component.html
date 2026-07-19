@@ -3,7 +3,7 @@
     <ng-template #content let-order>
       <div class="flex flex-col gap-16">
         <div class="flex flex-row items-center gap-12 flex-wrap animation-slideInDown">
-          <p-button icon="pi pi-arrow-left" variant="text" severity="secondary" [ariaLabel]="'common.back' | translate" (onClick)="back()"></p-button>
+          <button pButton type="button" iconOnly variant="text" severity="secondary" [attr.aria-label]="'common.back' | translate" (click)="back()"><i class="pi pi-arrow-left"></i></button>
           <h2 class="admin-order-details__title">{{ 'admin.orderDetails.title' | translate:{id: order.id} }}</h2>
           <p-tag [value]="'orderStatus.' + order.orderStatus | translate" [severity]="orderStatusSeverity(order.orderStatus)" [rounded]="true"></p-tag>
           <span class="admin-order-details__date">{{ order.placeDate | date:'dd.MM.yyyy HH:mm' }}</span>
@@ -17,11 +17,9 @@
                       [ngModel]="selectedStatus()"
                       (ngModelChange)="selectedStatus.set($event)">
             </p-select>
-            <p-button [label]="'admin.orderDetails.changeStatus' | translate"
-                      icon="pi pi-sync"
-                      [loading]="changingStatus()"
-                      [disabled]="selectedStatus() === order.orderStatus"
-                      (onClick)="changeStatus()"></p-button>
+            <button pButton type="button"
+                    [disabled]="changingStatus() || selectedStatus() === order.orderStatus"
+                    (click)="changeStatus()"><i [class]="changingStatus() ? 'pi pi-spinner pi-spin' : 'pi pi-sync'"></i>{{ 'admin.orderDetails.changeStatus' | translate }}</button>
           </div>
         </div>
 
@@ -42,7 +40,7 @@
                   <tr>
                     <td style="width: 56px;">
                       @if (row.product && imageUrl(row.product.image); as src) {
-                        <img [src]="src" [alt]="localizedName(row.product)" class="admin-order-details__thumb"/>
+                        <img [ngSrc]="src" width="40" height="40" [alt]="localizedName(row.product)" class="admin-order-details__thumb"/>
                       } @else if (row.product) {
                         <div class="image-placeholder admin-order-details__thumb">
                           <i class="pi pi-image"></i>

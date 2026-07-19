@@ -3,7 +3,7 @@
 <div class="flex flex-col gap-16 admin-products animation-fadeIn">
   <div class="flex flex-row items-center justify-between animation-slideInDown">
     <h2 class="admin-products__title">{{ 'admin.products.title' | translate }}</h2>
-    <p-button [label]="'admin.products.add' | translate" icon="pi pi-plus" (onClick)="addProduct()"></p-button>
+    <button pButton type="button" (click)="addProduct()"><i class="pi pi-plus"></i>{{ 'admin.products.add' | translate }}</button>
   </div>
 
   <ui-content-loader [data]="store.data" [contentTemplate]="content">
@@ -24,7 +24,7 @@
             <tr>
               <td>
                 @if (imageUrl(product.image); as src) {
-                  <img [src]="src" [alt]="localizedName(product)" class="admin-products__thumb"/>
+                  <img [ngSrc]="src" width="48" height="48" [alt]="localizedName(product)" class="admin-products__thumb"/>
                 } @else {
                   <div class="image-placeholder admin-products__thumb">
                     <i class="pi pi-image"></i>
@@ -37,8 +37,8 @@
               <td class="admin-products__price-col">{{ product.price | number:'1.2-2' }} {{ product.currency }}</td>
               <td>
                 <div class="flex flex-row gap-4 justify-end">
-                  <p-button icon="pi pi-pencil" variant="text" [ariaLabel]="'common.edit' | translate" (onClick)="editProduct(product)"></p-button>
-                  <p-button icon="pi pi-trash" variant="text" severity="danger" [ariaLabel]="'common.delete' | translate" (onClick)="deleteProduct(product)"></p-button>
+                  <button pButton type="button" iconOnly variant="text" [attr.aria-label]="'common.edit' | translate" (click)="editProduct(product)"><i class="pi pi-pencil"></i></button>
+                  <button pButton type="button" iconOnly variant="text" severity="danger" [attr.aria-label]="'common.delete' | translate" (click)="deleteProduct(product)"><i class="pi pi-trash"></i></button>
                 </div>
               </td>
             </tr>

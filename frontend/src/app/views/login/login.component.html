@@ -15,24 +15,30 @@
         <p-message severity="error">{{ loginForm.username().errors()[0].message }}</p-message>
       }
 
-      <p-password [placeholder]="'auth.password' | translate"
-                  [toggleMask]="true"
-                  [feedback]="false"
-                  [ngModel]="loginForm.password().value()"
-                  (ngModelChange)="loginForm.password().value.set($event)"
-                  [ngModelOptions]="{standalone: true}"></p-password>
+      <p-iconfield>
+        <input pInputPassword [placeholder]="'auth.password' | translate"
+               [mask]="passwordMasked()"
+               [ngModel]="loginForm.password().value()"
+               (ngModelChange)="loginForm.password().value.set($event)"
+               [ngModelOptions]="{standalone: true}"/>
+        <p-inputicon [class]="passwordMasked() ? 'pi pi-eye' : 'pi pi-eye-slash'"
+                     (click)="passwordMasked.set(!passwordMasked())"/>
+      </p-iconfield>
       @if (loginForm.password().touched() && loginForm.password().invalid()) {
         <p-message severity="error">{{ loginForm.password().errors()[0].message }}</p-message>
       }
 
-      <p-button [label]="'auth.login' | translate"
-                type="submit"
-                styleClass="auth-page__submit"
-                [loading]="loginForm().submitting()"></p-button>
+      <button pButton
+              type="submit"
+              class="auth-page__submit"
+              [disabled]="loginForm().submitting()"
+      >@if (loginForm().submitting()) {
+        <i class="pi pi-spinner pi-spin"></i>
+      }{{ 'auth.login' | translate }}</button>
 
       <div class="flex flex-row items-center justify-between">
-        <p-button [label]="'common.backToShop' | translate" variant="text" severity="secondary" routerLink="/"></p-button>
-        <p-button [label]="'auth.register' | translate" variant="text" routerLink="/register"></p-button>
+        <button pButton type="button" variant="text" severity="secondary" routerLink="/">{{ 'common.backToShop' | translate }}</button>
+        <button pButton type="button" variant="text" routerLink="/register">{{ 'auth.register' | translate }}</button>
       </div>
     </form>
   </div>

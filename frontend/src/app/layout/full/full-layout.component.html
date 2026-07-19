@@ -16,18 +16,18 @@
             <p-toggleswitch [ngModel]="themeService.dark()" (ngModelChange)="themeService.toggle()"/>
             <i class="pi pi-moon"></i>
           </div>
-          <p-button [label]="'admin.menu.shop' | translate"
-                    icon="pi pi-shopping-bag"
-                    variant="text"
-                    severity="secondary"
-                    routerLink="/"></p-button>
-          <p-button icon="pi pi-sign-out"
-                    variant="text"
-                    severity="secondary"
-                    [ariaLabel]="'header.logout' | translate"
-                    [pTooltip]="'header.logout' | translate"
-                    tooltipPosition="bottom"
-                    (onClick)="authService.logout()"></p-button>
+          <button pButton type="button"
+                  variant="text"
+                  severity="secondary"
+                  routerLink="/"><i class="pi pi-shopping-bag"></i>{{ 'admin.menu.shop' | translate }}</button>
+          <button pButton type="button"
+                  iconOnly
+                  variant="text"
+                  severity="secondary"
+                  [attr.aria-label]="'header.logout' | translate"
+                  [pTooltip]="'header.logout' | translate"
+                  tooltipPosition="bottom"
+                  (click)="authService.logout()"><i class="pi pi-sign-out"></i></button>
         </div>
       </ng-template>
     </p-menubar>

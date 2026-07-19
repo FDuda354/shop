@@ -6,8 +6,9 @@
 #     Scope: TYLKO frontend/ — wszystkie ścieżki poniżej są relatywne do        #
 #     tego katalogu (TeamCity montuje frontend/ jako /data/project).            #
 #                                                                               #
-#     Reguły globalne (licenseRules, failureConditions, itp.) są dziedziczone   #
-#     z DUDIOS global config w Qodana Cloud — te same co scan backendu.         #
+#     Ten plik jest JEDYNYM aktywnym źródłem konfiguracji Qodany dla frontendu. #
+#     Globalne konfiguracje (repo qodana-global-configs) wymagają planu Qodana  #
+#     Ultimate Plus — na naszym planie Ultimate skan ich NIE ładuje.            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
 

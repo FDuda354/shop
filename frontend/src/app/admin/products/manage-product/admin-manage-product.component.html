@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-16 admin-manage-product animation-fadeIn">
   <div class="flex flex-row items-center gap-12 animation-slideInDown">
-    <p-button icon="pi pi-arrow-left" variant="text" severity="secondary" [ariaLabel]="'common.back' | translate" (onClick)="cancel()"></p-button>
+    <button pButton type="button" iconOnly variant="text" severity="secondary" [attr.aria-label]="'common.back' | translate" (click)="cancel()"><i class="pi pi-arrow-left"></i></button>
     <h2 class="admin-manage-product__title">{{ (isEdit() ? 'admin.manageProduct.editTitle' : 'admin.manageProduct.newTitle') | translate }}</h2>
   </div>
 
@@ -77,27 +77,27 @@
       </div>
 
       <div class="flex flex-row gap-12 justify-end">
-        <p-button [label]="'common.cancel' | translate" variant="text" severity="secondary" (onClick)="cancel()"></p-button>
-        <p-button [label]="(isEdit() ? 'admin.manageProduct.saveChanges' : 'admin.manageProduct.addProduct') | translate"
-                  icon="pi pi-check"
-                  type="submit"
-                  [loading]="productForm().submitting()"></p-button>
+        <button pButton type="button" variant="text" severity="secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
+        <button pButton
+                type="submit"
+                [disabled]="productForm().submitting()"
+        ><i [class]="productForm().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ (isEdit() ? 'admin.manageProduct.saveChanges' : 'admin.manageProduct.addProduct') | translate }}</button>
       </div>
     </div>
 
     <div class="flex--40 admin-manage-product__image-panel flex flex-col items-center gap-12 md-down:w-full">
       @if (imageUrl(productModel().image); as src) {
-        <img [src]="src" [alt]="'admin.manageProduct.productImageAlt' | translate" class="admin-manage-product__preview"/>
+        <img [ngSrc]="src" width="280" height="280" [alt]="'admin.manageProduct.productImageAlt' | translate" class="admin-manage-product__preview"/>
       } @else {
         <div class="image-placeholder admin-manage-product__preview">
           <i class="pi pi-image"></i>
         </div>
       }
-      <p-button [label]="'admin.manageProduct.uploadImage' | translate"
-                icon="pi pi-upload"
-                variant="outlined"
-                [loading]="uploadingImage()"
-                (onClick)="imageInput.click()"></p-button>
+      <button pButton type="button"
+              variant="outlined"
+              [disabled]="uploadingImage()"
+              (click)="imageInput.click()"
+      ><i [class]="uploadingImage() ? 'pi pi-spinner pi-spin' : 'pi pi-upload'"></i>{{ 'admin.manageProduct.uploadImage' | translate }}</button>
       <input #imageInput type="file" accept="image/*" (change)="onImageSelected($event)" hidden/>
       @if (productModel().image) {
         <span class="admin-manage-product__image-name">{{ productModel().image }}</span>

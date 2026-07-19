@@ -23,6 +23,8 @@ export class ProfileComponent {
   readonly authService = inject(AuthService);
   readonly imageUrl = imageUrl;
   readonly uploadingAvatar = signal(false);
+  readonly passwordMasked = signal(true);
+  readonly repeatPasswordMasked = signal(true);
 
   readonly profileImage = rxResource<{image: string | null}, number | undefined>({
     params: () => this.authService.currentUser()?.id,

@@ -15,33 +15,43 @@
         <p-message severity="error">{{ registerForm.username().errors()[0].message }}</p-message>
       }
 
-      <p-password [placeholder]="'auth.password' | translate"
-                  [toggleMask]="true"
-                  [ngModel]="registerForm.password().value()"
-                  (ngModelChange)="registerForm.password().value.set($event)"
-                  [ngModelOptions]="{standalone: true}"></p-password>
+      <p-iconfield>
+        <input pInputPassword [placeholder]="'auth.password' | translate"
+               [mask]="passwordMasked()"
+               [ngModel]="registerForm.password().value()"
+               (ngModelChange)="registerForm.password().value.set($event)"
+               [ngModelOptions]="{standalone: true}"/>
+        <p-inputicon [class]="passwordMasked() ? 'pi pi-eye' : 'pi pi-eye-slash'"
+                     (click)="passwordMasked.set(!passwordMasked())"/>
+      </p-iconfield>
       @if (registerForm.password().touched() && registerForm.password().invalid()) {
         <p-message severity="error">{{ registerForm.password().errors()[0].message }}</p-message>
       }
 
-      <p-password [placeholder]="'auth.repeatPassword' | translate"
-                  [toggleMask]="true"
-                  [feedback]="false"
-                  [ngModel]="registerForm.confirmPassword().value()"
-                  (ngModelChange)="registerForm.confirmPassword().value.set($event)"
-                  [ngModelOptions]="{standalone: true}"></p-password>
+      <p-iconfield>
+        <input pInputPassword [placeholder]="'auth.repeatPassword' | translate"
+               [mask]="confirmPasswordMasked()"
+               [ngModel]="registerForm.confirmPassword().value()"
+               (ngModelChange)="registerForm.confirmPassword().value.set($event)"
+               [ngModelOptions]="{standalone: true}"/>
+        <p-inputicon [class]="confirmPasswordMasked() ? 'pi pi-eye' : 'pi pi-eye-slash'"
+                     (click)="confirmPasswordMasked.set(!confirmPasswordMasked())"/>
+      </p-iconfield>
       @if (registerForm.confirmPassword().touched() && registerForm.confirmPassword().invalid()) {
         <p-message severity="error">{{ registerForm.confirmPassword().errors()[0].message }}</p-message>
       }
 
-      <p-button [label]="'auth.register' | translate"
-                type="submit"
-                styleClass="auth-page__submit"
-                [loading]="registerForm().submitting()"></p-button>
+      <button pButton
+              type="submit"
+              class="auth-page__submit"
+              [disabled]="registerForm().submitting()"
+      >@if (registerForm().submitting()) {
+        <i class="pi pi-spinner pi-spin"></i>
+      }{{ 'auth.register' | translate }}</button>
 
       <div class="flex flex-row items-center justify-between">
-        <p-button [label]="'common.backToShop' | translate" variant="text" severity="secondary" routerLink="/"></p-button>
-        <p-button [label]="'auth.haveAccount' | translate" variant="text" routerLink="/login"></p-button>
+        <button pButton type="button" variant="text" severity="secondary" routerLink="/">{{ 'common.backToShop' | translate }}</button>
+        <button pButton type="button" variant="text" routerLink="/login">{{ 'auth.haveAccount' | translate }}</button>
       </div>
     </form>
   </div>

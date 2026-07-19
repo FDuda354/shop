@@ -3,7 +3,7 @@
 <div class="flex flex-col gap-16 admin-categories animation-fadeIn">
   <div class="flex flex-row items-center justify-between animation-slideInDown">
     <h2 class="admin-categories__title">{{ 'admin.categories.title' | translate }}</h2>
-    <p-button [label]="'admin.categories.add' | translate" icon="pi pi-plus" (onClick)="openAdd()"></p-button>
+    <button pButton type="button" (click)="openAdd()"><i class="pi pi-plus"></i>{{ 'admin.categories.add' | translate }}</button>
   </div>
 
   <ui-content-loader [data]="categories" [contentTemplate]="content">
@@ -24,8 +24,8 @@
             <td>{{ localizedDescription(category) }}</td>
             <td>
               <div class="flex flex-row gap-4 justify-end">
-                <p-button icon="pi pi-pencil" variant="text" [ariaLabel]="'common.edit' | translate" (onClick)="openEdit(category)"></p-button>
-                <p-button icon="pi pi-trash" variant="text" severity="danger" [ariaLabel]="'common.delete' | translate" (onClick)="deleteCategory(category)"></p-button>
+                <button pButton type="button" iconOnly variant="text" [attr.aria-label]="'common.edit' | translate" (click)="openEdit(category)"><i class="pi pi-pencil"></i></button>
+                <button pButton type="button" iconOnly variant="text" severity="danger" [attr.aria-label]="'common.delete' | translate" (click)="deleteCategory(category)"><i class="pi pi-trash"></i></button>
               </div>
             </td>
           </tr>
@@ -63,11 +63,11 @@
     <textarea pTextarea [formField]="categoryForm().descriptionEn" rows="3" [placeholder]="'admin.categories.descriptionEnPlaceholder' | translate"></textarea>
 
     <div class="flex flex-row justify-end gap-8">
-      <p-button [label]="'common.cancel' | translate" variant="text" severity="secondary" (onClick)="drawerVisible.set(false)"></p-button>
-      <p-button [label]="(editedId() != null ? 'common.save' : 'common.add') | translate"
-                icon="pi pi-check"
-                type="submit"
-                [loading]="categoryForm()().submitting()"></p-button>
+      <button pButton type="button" variant="text" severity="secondary" (click)="drawerVisible.set(false)">{{ 'common.cancel' | translate }}</button>
+      <button pButton
+              type="submit"
+              [disabled]="categoryForm()().submitting()"
+      ><i [class]="categoryForm()().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ (editedId() != null ? 'common.save' : 'common.add') | translate }}</button>
     </div>
   </form>
 </p-drawer>

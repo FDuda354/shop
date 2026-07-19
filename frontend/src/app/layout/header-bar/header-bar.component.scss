@@ -3,8 +3,6 @@
   min-height: 56px;
 
   &__mobile-menu {
-    display: block;
-
     @media (min-width: 768px) {
       display: none;
     }

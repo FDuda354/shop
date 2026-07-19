@@ -18,13 +18,13 @@
           <p class="checkout__payment-note">{{ order.payment.note }}</p>
         }
       </div>
-      <p-button [label]="'common.backToShop' | translate" icon="pi pi-arrow-left" variant="text" (onClick)="goToShop()"></p-button>
+      <button pButton type="button" variant="text" (click)="goToShop()"><i class="pi pi-arrow-left"></i>{{ 'common.backToShop' | translate }}</button>
     </div>
   } @else if (basketEmpty()) {
     <div class="flex flex-col items-center justify-center checkout__empty animation-fadeIn">
       <i class="pi pi-shopping-cart checkout__empty-icon"></i>
       <h4>{{ 'checkout.emptyBasket' | translate }}</h4>
-      <p-button [label]="'common.backToShopping' | translate" icon="pi pi-arrow-left" variant="text" (onClick)="goToShop()"></p-button>
+      <button pButton type="button" variant="text" (click)="goToShop()"><i class="pi pi-arrow-left"></i>{{ 'common.backToShopping' | translate }}</button>
     </div>
   } @else {
     <h2 class="checkout__title animation-slideInDown">{{ 'checkout.title' | translate }}</h2>
@@ -103,11 +103,11 @@
           </ng-template>
         </ui-content-loader>
 
-        <p-button [label]="'checkout.submit' | translate"
-                  icon="pi pi-check"
-                  type="submit"
-                  styleClass="checkout__submit"
-                  [loading]="addressForm().submitting()"></p-button>
+        <button pButton
+                type="submit"
+                class="checkout__submit"
+                [disabled]="addressForm().submitting()"
+        ><i [class]="addressForm().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ 'checkout.submit' | translate }}</button>
       </form>
 
       <div class="flex--40 checkout__summary flex flex-col gap-12 md-down:w-full">
