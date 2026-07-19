@@ -15,7 +15,7 @@ COPY frontend/ frontend/
 
 # Budujemy aplikację (backend automatycznie zbuduje frontend)
 RUN chmod +x ./gradlew
-RUN ./gradlew :backend:bootJar -x test -x integrationTest --no-daemon
+RUN ./gradlew :backend:bootJar -x test --no-daemon
 
 # Stage 2: Run
 FROM eclipse-temurin:25-jre
