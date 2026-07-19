@@ -41,5 +41,11 @@ exclude:
       - backend/src/test/resources/application-test.yml
 
 failureConditions:
+  # Bramka jakości: build czerwony wyłącznie od Critical/High. Moderate ląduje
+  # w Qodana Cloud, ale nie blokuje. Runner ma report-as-test wyłączony, więc
+  # to jest JEDYNE miejsce decydujące o statusie builda.
+  severityThresholds:
+    critical: 0
+    high: 0
   testCoverageThresholds:
     total: 60

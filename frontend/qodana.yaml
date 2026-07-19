@@ -47,3 +47,11 @@ exclude:
       - .angular
       - coverage
       - .nx
+
+# Bramka jakości: build czerwony wyłącznie od Critical/High. Moderate ląduje
+# w Qodana Cloud, ale nie blokuje. Runner ma report-as-test wyłączony, więc
+# to jest JEDYNE miejsce decydujące o statusie builda.
+failureConditions:
+  severityThresholds:
+    critical: 0
+    high: 0
