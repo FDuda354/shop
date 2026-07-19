@@ -10,10 +10,8 @@ version: "1.0"
 linter: jetbrains/qodana-jvm:latest
 projectJDK: "25"
 
-# Pokrycie: total >= 10% (failureConditions), bez szumu per klasa/metoda.
-# Próg trzyma się grzechotki z backend/build.gradle.kts (minimum = 0.10) —
-# realne pokrycie shopu to ~14% linii. Docelowo 60 jak w debtorze; podnosić
-# oba miejsca RAZEM, w miarę dopisywania testów.
+# Pokrycie: total >= 60% (failureConditions), bez szumu per klasa/metoda.
+# Próg trzyma się grzechotki z backend/build.gradle.kts (minimum = 0.60).
 # JvmCoverageInspection musi zostać WŁĄCZONA (liczy statystykę total dla
 # Qodana Cloud i bramy testCoverageThresholds) — wyciszamy ją wyzerowanymi
 # progami, NIE przez exclude (exclude = "Code coverage: Not set").
@@ -44,4 +42,4 @@ exclude:
 
 failureConditions:
   testCoverageThresholds:
-    total: 10
+    total: 60

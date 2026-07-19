@@ -157,11 +157,8 @@ tasks.named<JacocoCoverageVerification>("jacocoTestCoverageVerification") {
         rule {
             limit {
                 counter = "LINE"
-                // Ratchet: realne pokrycie logiki to ~13% linii (klasy *Config
-                // wykluczone, choć kontekst Springa i tak je wykonuje) — próg
-                // trzyma stan posiadania i rośnie wraz z testami. Cel: 0.60 (debtor).
                 value = "COVEREDRATIO"
-                minimum = BigDecimal("0.10")
+                minimum = BigDecimal("0.60")
             }
         }
     }
