@@ -16,7 +16,7 @@
 
   <div class="flex flex-row justify-end">
     <button pButton type="submit"
-            [disabled]="reviewForm()().submitting()"
-    ><i [class]="reviewForm()().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-send'"></i>{{ 'product.review.submit' | translate }}</button>
+            [disabled]="submitting()"
+    ><i [class]="submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-send'"></i>{{ 'product.review.submit' | translate }}</button>
   </div>
 </form>

@@ -31,8 +31,8 @@
       <button pButton
               type="submit"
               class="auth-page__submit"
-              [disabled]="loginForm().submitting()"
-      >@if (loginForm().submitting()) {
+              [disabled]="submitting()"
+      >@if (submitting()) {
         <i class="pi pi-spinner pi-spin"></i>
       }{{ 'auth.login' | translate }}</button>
 

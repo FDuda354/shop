@@ -1,7 +1,6 @@
 import {inject, NgModule, provideAppInitializer, provideZonelessChangeDetection} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
-import {firstValueFrom} from 'rxjs';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {providePrimeNG} from 'primeng/config';
 import {provideSignalFormsConfig} from '@angular/forms/signals';
@@ -126,7 +125,7 @@ const ShopPreset = definePreset(Aura, {
     ConfirmationService,
     MessageService,
     provideHttpClient(withInterceptors([httpInterceptorFn])),
-    provideAppInitializer(() => firstValueFrom(inject(AuthService).loadMe())),
+    provideAppInitializer(() => inject(AuthService).loadMe()),
     provideTranslateService(),
     // Instancjonuje LanguageService przed pierwszym renderem: ładuje słowniki
     // pl/en i aplikuje zapamiętany język (ngx-translate + PrimeNG + <html lang>).

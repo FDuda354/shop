@@ -1,6 +1,6 @@
 import {Component, inject, Injector, signal} from '@angular/core';
-import {form, minLength, required, submit, validate} from '@angular/forms/signals';
-import {firstValueFrom} from 'rxjs';
+import {form, minLength, required, validate} from '@angular/forms/signals';
+import {finalize} from 'rxjs';
 import {rxResource} from '@angular/core/rxjs-interop';
 import {AuthService} from '../../services/auth/auth.service';
 import {UserService} from '../../services/user.service';
@@ -25,6 +25,7 @@ export class ProfileComponent {
   readonly uploadingAvatar = signal(false);
   readonly passwordMasked = signal(true);
   readonly repeatPasswordMasked = signal(true);
+  readonly submitting = signal(false);
 
   readonly profileImage = rxResource<{image: string | null}, number | undefined>({
     params: () => this.authService.currentUser()?.id,
@@ -74,20 +75,26 @@ export class ProfileComponent {
     input.value = '';
   }
 
-  async onPasswordSubmit() {
-    await submit(this.passwordForm(), async () => {
-      try {
-        await firstValueFrom(this.userService.changePassword(
-          this.passwordModel().password,
-          this.passwordModel().repeatPassword,
-        ));
-        this.passwordModel.set({password: '', repeatPassword: ''});
-        this.passwordForm.set(this.buildForm());
-        this.notification.success('common.saved', 'toast.passwordChanged');
-      } catch (_err) {
-        this.notification.error('common.error', 'toast.passwordChangeError');
-      }
-      return undefined;
-    });
+  onPasswordSubmit() {
+    this.passwordForm()().markAsTouched();
+    if (this.passwordForm()().invalid()) {
+      return;
+    }
+    this.submitting.set(true);
+    this.userService.changePassword(
+      this.passwordModel().password,
+      this.passwordModel().repeatPassword,
+    )
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.passwordModel.set({password: '', repeatPassword: ''});
+          this.passwordForm.set(this.buildForm());
+          this.notification.success('common.saved', 'toast.passwordChanged');
+        },
+        error: () => {
+          this.notification.error('common.error', 'toast.passwordChangeError');
+        },
+      });
   }
 }

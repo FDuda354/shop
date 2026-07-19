@@ -66,8 +66,8 @@
       <button pButton type="button" variant="text" severity="secondary" (click)="drawerVisible.set(false)">{{ 'common.cancel' | translate }}</button>
       <button pButton
               type="submit"
-              [disabled]="categoryForm()().submitting()"
-      ><i [class]="categoryForm()().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ (editedId() != null ? 'common.save' : 'common.add') | translate }}</button>
+              [disabled]="submitting()"
+      ><i [class]="submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ (editedId() != null ? 'common.save' : 'common.add') | translate }}</button>
     </div>
   </form>
 </p-drawer>

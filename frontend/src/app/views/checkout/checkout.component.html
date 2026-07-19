@@ -106,8 +106,8 @@
         <button pButton
                 type="submit"
                 class="checkout__submit"
-                [disabled]="addressForm().submitting()"
-        ><i [class]="addressForm().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ 'checkout.submit' | translate }}</button>
+                [disabled]="submitting()"
+        ><i [class]="submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ 'checkout.submit' | translate }}</button>
       </form>
 
       <div class="flex--40 checkout__summary flex flex-col gap-12 md-down:w-full">

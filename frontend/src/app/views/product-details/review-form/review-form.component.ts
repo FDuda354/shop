@@ -1,6 +1,6 @@
 import {Component, inject, Injector, input, output, signal} from '@angular/core';
-import {form, maxLength, minLength, required, submit} from '@angular/forms/signals';
-import {firstValueFrom} from 'rxjs';
+import {form, maxLength, minLength, required} from '@angular/forms/signals';
+import {finalize} from 'rxjs';
 import {ReviewService} from '../../../services/review.service';
 import {NotificationService} from '../../../services/notification.service';
 import {validationMessages} from '../../../utils/validation-message';
@@ -22,6 +22,8 @@ export class ReviewFormComponent {
 
   readonly reviewModel = signal({authorName: '', content: ''});
 
+  readonly submitting = signal(false);
+
   // Signal forms w 22.0 nie mają publicznego resetu touched — po sukcesie
   // budujemy świeży formularz, żeby wyczyszczone pola nie świeciły błędami.
   readonly reviewForm = signal(this.buildForm());
@@ -37,22 +39,28 @@ export class ReviewFormComponent {
     }, {injector: this.injector});
   }
 
-  async onSubmit() {
-    await submit(this.reviewForm(), async () => {
-      try {
-        await firstValueFrom(this.reviewService.addReview({
-          authorName: this.reviewModel().authorName,
-          content: this.reviewModel().content,
-          productId: this.productId(),
-        }));
-        this.reviewModel.set({authorName: '', content: ''});
-        this.reviewForm.set(this.buildForm());
-        this.notification.success('toast.reviewThanks', 'toast.reviewAdded');
-        this.reviewAdded.emit();
-      } catch (_err) {
-        this.notification.error('common.error', 'toast.reviewError');
-      }
-      return undefined;
-    });
+  onSubmit() {
+    this.reviewForm()().markAsTouched();
+    if (this.reviewForm()().invalid()) {
+      return;
+    }
+    this.submitting.set(true);
+    this.reviewService.addReview({
+      authorName: this.reviewModel().authorName,
+      content: this.reviewModel().content,
+      productId: this.productId(),
+    })
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.reviewModel.set({authorName: '', content: ''});
+          this.reviewForm.set(this.buildForm());
+          this.notification.success('toast.reviewThanks', 'toast.reviewAdded');
+          this.reviewAdded.emit();
+        },
+        error: () => {
+          this.notification.error('common.error', 'toast.reviewError');
+        },
+      });
   }
 }

@@ -57,8 +57,8 @@
 
         <div class="flex flex-row justify-end">
           <button pButton type="submit"
-                  [disabled]="passwordForm()().submitting()">
-            <i [class]="passwordForm()().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-lock'"></i>
+                  [disabled]="submitting()">
+            <i [class]="submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-lock'"></i>
             {{ 'profile.changePasswordSubmit' | translate }}
           </button>
         </div>

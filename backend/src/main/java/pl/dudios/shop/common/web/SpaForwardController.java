@@ -16,13 +16,13 @@ public class SpaForwardController {
 
     @GetMapping(value = {
             "/orders",
-            "/product/{slug}",
+            "/product/*",
             "/admin",
             "/admin/products",
-            "/admin/product/{id}",
+            "/admin/product/*",
             "/admin/categories",
             "/admin/orders",
-            "/admin/order/{id}",
+            "/admin/order/*",
     }, produces = MediaType.TEXT_HTML_VALUE)
     public String forwardSpaRoutes() {
         return "forward:/index.html";

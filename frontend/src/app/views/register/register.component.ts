@@ -1,6 +1,7 @@
 import {Component, inject, signal, ViewEncapsulation} from '@angular/core';
-import {email, form, minLength, required, submit, validate} from '@angular/forms/signals';
-import {firstValueFrom} from 'rxjs';
+import {email, form, minLength, required, validate} from '@angular/forms/signals';
+import {HttpErrorResponse} from '@angular/common/http';
+import {finalize} from 'rxjs';
 import {Router} from '@angular/router';
 import {AuthService} from '../../services/auth/auth.service';
 import {NotificationService} from '../../services/notification.service';
@@ -24,6 +25,7 @@ export class RegisterComponent {
 
   readonly passwordMasked = signal(true);
   readonly confirmPasswordMasked = signal(true);
+  readonly submitting = signal(false);
 
   readonly registerForm = form(this.registerModel, (f) => {
     required(f.username, {message: this.msg('validation.emailRequired')});
@@ -37,21 +39,27 @@ export class RegisterComponent {
         : undefined);
   });
 
-  async onSubmit() {
-    await submit(this.registerForm, async () => {
-      try {
-        await firstValueFrom(this.authService.register(this.registerModel()));
-        void this.router.navigate(['/']);
-      } catch (err: any) {
-        if (err.status === 400) {
-          this.notification.error('toast.registerFailedTitle', 'toast.registerFailedDetail');
-        } else if (err.status === 0) {
-          this.notification.error('toast.noConnectionTitle', 'toast.noConnectionDetail');
-        } else {
-          this.notification.error('common.error', 'toast.serverError');
-        }
-      }
-      return undefined;
-    });
+  onSubmit() {
+    this.registerForm().markAsTouched();
+    if (this.registerForm().invalid()) {
+      return;
+    }
+    this.submitting.set(true);
+    this.authService.register(this.registerModel())
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: () => {
+          void this.router.navigate(['/']);
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 400) {
+            this.notification.error('toast.registerFailedTitle', 'toast.registerFailedDetail');
+          } else if (err.status === 0) {
+            this.notification.error('toast.noConnectionTitle', 'toast.noConnectionDetail');
+          } else {
+            this.notification.error('common.error', 'toast.serverError');
+          }
+        },
+      });
   }
 }

@@ -1,8 +1,8 @@
 import {Component, inject, Injector, signal} from '@angular/core';
 import {rxResource} from '@angular/core/rxjs-interop';
-import {firstValueFrom} from 'rxjs';
+import {finalize} from 'rxjs';
 import {ConfirmationService} from 'primeng/api';
-import {form, maxLength, submit} from '@angular/forms/signals';
+import {form, maxLength} from '@angular/forms/signals';
 import {TranslateService} from '@ngx-translate/core';
 import {AdminCategoryService} from '../../services/admin/admin-category.service';
 import {NotificationService} from '../../services/notification.service';
@@ -36,6 +36,7 @@ export class AdminCategoriesComponent {
 
   readonly drawerVisible = signal(false);
   readonly editedId = signal<number | null>(null);
+  readonly submitting = signal(false);
 
   readonly categoryModel = signal({name: '', slug: '', description: '', nameEn: '', descriptionEn: ''});
 
@@ -71,33 +72,42 @@ export class AdminCategoriesComponent {
     this.drawerVisible.set(true);
   }
 
-  async onSubmit() {
-    await submit(this.categoryForm(), async () => {
-      const model = this.categoryModel();
-      const request = {
-        name: model.name,
-        slug: model.slug,
-        description: model.description || null,
-        // trim(): wartość z samych spacji ma być brakiem tłumaczenia (null),
-        // inaczej wygrywałaby z fallbackiem do polskiej wersji.
-        nameEn: model.nameEn.trim() || null,
-        descriptionEn: model.descriptionEn.trim() || null,
-      };
-      try {
-        if (this.editedId() != null) {
-          await firstValueFrom(this.adminCategoryService.updateCategory(this.editedId()!, request));
-          this.notification.success('common.saved', 'toast.categorySaved');
-        } else {
-          await firstValueFrom(this.adminCategoryService.addCategory(request));
-          this.notification.success('toast.productAddedTitle', 'toast.categoryAdded');
-        }
-        this.drawerVisible.set(false);
-        this.categories.reload();
-      } catch (_err) {
-        this.notification.error('common.error', 'toast.categorySaveError');
-      }
-      return undefined;
-    });
+  onSubmit() {
+    this.categoryForm()().markAsTouched();
+    if (this.categoryForm()().invalid()) {
+      return;
+    }
+    const model = this.categoryModel();
+    const request = {
+      name: model.name,
+      slug: model.slug,
+      description: model.description || null,
+      // trim(): wartość z samych spacji ma być brakiem tłumaczenia (null),
+      // inaczej wygrywałaby z fallbackiem do polskiej wersji.
+      nameEn: model.nameEn.trim() || null,
+      descriptionEn: model.descriptionEn.trim() || null,
+    };
+    const isEdit = this.editedId() != null;
+    const request$ = isEdit
+      ? this.adminCategoryService.updateCategory(this.editedId()!, request)
+      : this.adminCategoryService.addCategory(request);
+    this.submitting.set(true);
+    request$
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: () => {
+          if (isEdit) {
+            this.notification.success('common.saved', 'toast.categorySaved');
+          } else {
+            this.notification.success('toast.productAddedTitle', 'toast.categoryAdded');
+          }
+          this.drawerVisible.set(false);
+          this.categories.reload();
+        },
+        error: () => {
+          this.notification.error('common.error', 'toast.categorySaveError');
+        },
+      });
   }
 
   deleteCategory(category: AdminCategory): void {

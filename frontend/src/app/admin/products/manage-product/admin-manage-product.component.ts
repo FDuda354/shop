@@ -2,8 +2,8 @@ import {Component, computed, effect, inject, Injector, signal, untracked} from '
 import {ActivatedRoute, Router} from '@angular/router';
 import {rxResource, toSignal} from '@angular/core/rxjs-interop';
 import {map} from 'rxjs/operators';
-import {firstValueFrom} from 'rxjs';
-import {form, maxLength, min, minLength, required, submit} from '@angular/forms/signals';
+import {finalize} from 'rxjs';
+import {form, maxLength, min, minLength, required} from '@angular/forms/signals';
 import {AdminProductService} from '../../../services/admin/admin-product.service';
 import {AdminCategoryService} from '../../../services/admin/admin-category.service';
 import {NotificationService} from '../../../services/notification.service';
@@ -38,6 +38,7 @@ export class AdminManageProductComponent {
 
   readonly isEdit = computed(() => this.productId() != null);
   readonly uploadingImage = signal(false);
+  readonly submitting = signal(false);
   readonly imageUrl = imageUrl;
 
   readonly currencies = ['PLN', 'USD', 'EUR'];
@@ -126,42 +127,51 @@ export class AdminManageProductComponent {
     input.value = '';
   }
 
-  async onSubmit() {
+  onSubmit() {
     if (this.categoryId() == null) {
       this.notification.error('toast.missingDeliveryTitle', 'toast.missingCategoryDetail');
       return;
     }
-    await submit(this.productForm, async () => {
-      const model = this.productModel();
-      const request = {
-        name: model.name,
-        slug: model.slug,
-        description: model.description,
-        fullDescription: model.fullDescription || null,
-        // trim(): wartość z samych spacji ma być brakiem tłumaczenia (null),
-        // inaczej wygrywałaby z fallbackiem do polskiej wersji.
-        nameEn: model.nameEn.trim() || null,
-        descriptionEn: model.descriptionEn.trim() || null,
-        fullDescriptionEn: model.fullDescriptionEn.trim() || null,
-        categoryId: this.categoryId(),
-        price: model.price,
-        currency: this.currency(),
-        image: model.image,
-      };
-      try {
-        if (this.isEdit()) {
-          await firstValueFrom(this.adminProductService.updateProduct(this.productId()!, request));
-          this.notification.success('common.saved', 'toast.productSaved');
-        } else {
-          await firstValueFrom(this.adminProductService.addProduct(request));
-          this.notification.success('toast.productAddedTitle', 'toast.productAdded');
-        }
-        void this.router.navigate(['/admin/products']);
-      } catch (_err) {
-        this.notification.error('common.error', 'toast.productSaveError');
-      }
-      return undefined;
-    });
+    this.productForm().markAsTouched();
+    if (this.productForm().invalid()) {
+      return;
+    }
+    const model = this.productModel();
+    const request = {
+      name: model.name,
+      slug: model.slug,
+      description: model.description,
+      fullDescription: model.fullDescription || null,
+      // trim(): wartość z samych spacji ma być brakiem tłumaczenia (null),
+      // inaczej wygrywałaby z fallbackiem do polskiej wersji.
+      nameEn: model.nameEn.trim() || null,
+      descriptionEn: model.descriptionEn.trim() || null,
+      fullDescriptionEn: model.fullDescriptionEn.trim() || null,
+      categoryId: this.categoryId(),
+      price: model.price,
+      currency: this.currency(),
+      image: model.image,
+    };
+    const isEdit = this.isEdit();
+    const request$ = isEdit
+      ? this.adminProductService.updateProduct(this.productId()!, request)
+      : this.adminProductService.addProduct(request);
+    this.submitting.set(true);
+    request$
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: () => {
+          if (isEdit) {
+            this.notification.success('common.saved', 'toast.productSaved');
+          } else {
+            this.notification.success('toast.productAddedTitle', 'toast.productAdded');
+          }
+          void this.router.navigate(['/admin/products']);
+        },
+        error: () => {
+          this.notification.error('common.error', 'toast.productSaveError');
+        },
+      });
   }
 
   cancel(): void {

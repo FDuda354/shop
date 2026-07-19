@@ -80,8 +80,8 @@
         <button pButton type="button" variant="text" severity="secondary" (click)="cancel()">{{ 'common.cancel' | translate }}</button>
         <button pButton
                 type="submit"
-                [disabled]="productForm().submitting()"
-        ><i [class]="productForm().submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ (isEdit() ? 'admin.manageProduct.saveChanges' : 'admin.manageProduct.addProduct') | translate }}</button>
+                [disabled]="submitting()"
+        ><i [class]="submitting() ? 'pi pi-spinner pi-spin' : 'pi pi-check'"></i>{{ (isEdit() ? 'admin.manageProduct.saveChanges' : 'admin.manageProduct.addProduct') | translate }}</button>
       </div>
     </div>
 

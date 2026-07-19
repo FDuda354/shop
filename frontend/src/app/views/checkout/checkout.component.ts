@@ -1,8 +1,8 @@
 import {Component, computed, effect, inject, Injector, signal, untracked} from '@angular/core';
 import {Router} from '@angular/router';
 import {rxResource} from '@angular/core/rxjs-interop';
-import {email, form, maxLength, required, submit} from '@angular/forms/signals';
-import {firstValueFrom} from 'rxjs';
+import {email, form, maxLength, required} from '@angular/forms/signals';
+import {finalize} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {OrderService} from '../../services/order.service';
 import {BasketService} from '../../services/basket.service';
@@ -45,6 +45,7 @@ export class CheckoutComponent {
   readonly shipmentId = signal<number | null>(null);
   readonly paymentId = signal<number | null>(null);
   readonly confirmation = signal<OrderSummary | null>(null);
+  readonly submitting = signal(false);
 
   // Brak koszyka (id 0) lub koszyk bez pozycji — zamówienia nie da się złożyć.
   readonly basketMissing = computed(() => this.basketService.basketId() <= 0);
@@ -120,7 +121,7 @@ export class CheckoutComponent {
     });
   }
 
-  async onSubmit() {
+  onSubmit() {
     if (this.basketEmpty()) {
       this.notification.error('toast.emptyBasketTitle', 'toast.emptyBasketDetail');
       return;
@@ -129,21 +130,27 @@ export class CheckoutComponent {
       this.notification.error('toast.missingDeliveryTitle', 'toast.missingDeliveryDetail');
       return;
     }
-    await submit(this.addressForm, async () => {
-      try {
-        const summary = await firstValueFrom(this.orderService.createOrder({
-          ...this.addressModel(),
-          basketId: this.basketService.basketId(),
-          shipmentId: this.shipmentId()!,
-          paymentId: this.paymentId()!,
-        }));
-        this.confirmation.set(summary);
-        this.basketService.clearBasket();
-      } catch (_err) {
-        this.notification.error('common.error', 'toast.orderError');
-      }
-      return undefined;
-    });
+    this.addressForm().markAsTouched();
+    if (this.addressForm().invalid()) {
+      return;
+    }
+    this.submitting.set(true);
+    this.orderService.createOrder({
+      ...this.addressModel(),
+      basketId: this.basketService.basketId(),
+      shipmentId: this.shipmentId()!,
+      paymentId: this.paymentId()!,
+    })
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe({
+        next: (summary) => {
+          this.confirmation.set(summary);
+          this.basketService.clearBasket();
+        },
+        error: () => {
+          this.notification.error('common.error', 'toast.orderError');
+        },
+      });
   }
 
   goToShop(): void {
