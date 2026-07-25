@@ -1,8 +1,8 @@
 import {maxLength, minLength, required, SchemaPath, SchemaPathRules} from '@angular/forms/signals';
 
 export function nameAndSlugRules(
-  name: SchemaPath<string, SchemaPathRules.Supported>,
-  slug: SchemaPath<string, SchemaPathRules.Supported>,
+  name: SchemaPath<string>,
+  slug: SchemaPath<string>,
   msg: (key: string) => () => string,
 ): void {
   required(name, {message: msg('validation.nameRequired')});
