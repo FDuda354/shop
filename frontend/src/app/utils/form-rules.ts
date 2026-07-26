@@ -1,4 +1,4 @@
-import {maxLength, minLength, required, SchemaPath, SchemaPathRules} from '@angular/forms/signals';
+import {maxLength, minLength, required, SchemaPath} from '@angular/forms/signals';
 
 export function nameAndSlugRules(
   name: SchemaPath<string>,
