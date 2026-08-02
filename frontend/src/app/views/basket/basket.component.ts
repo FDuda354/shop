@@ -1,11 +1,14 @@
-import {Component, inject} from '@angular/core';
+import {Component, DestroyRef, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {rxResource} from '@angular/core/rxjs-interop';
+import {catchError, debounceTime, EMPTY, groupBy, mergeMap, Subject, switchMap} from 'rxjs';
 import {BasketService} from '../../services/basket.service';
 import {NotificationService} from '../../services/notification.service';
-import {BasketItem, BasketSummary} from '../../models/basket';
+import {BasketItem, BasketProductRequest, BasketSummary} from '../../models/basket';
 import {imageUrl} from '../../utils/image-url';
 import {localizedName} from '../../utils/localized';
+
+const QUANTITY_INPUT_SETTLE_MS = 400;
 
 @Component({
   selector: 'app-basket',
@@ -30,16 +33,29 @@ export class BasketComponent {
 
   readonly hasBasket = () => this.basketService.basketId() > 0;
 
+  private readonly quantityInput = new Subject<BasketProductRequest>();
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.quantityInput.complete());
+    this.quantityInput.pipe(
+      groupBy(request => request.productId),
+      mergeMap(productInput => productInput.pipe(
+        debounceTime(QUANTITY_INPUT_SETTLE_MS),
+        switchMap(request => this.basketService.updateBasket([request]).pipe(
+          catchError(() => {
+            this.notification.error('common.error', 'toast.basketUpdateError');
+            return EMPTY;
+          }),
+        )),
+      )),
+    ).subscribe(basket => this.basket.set(basket));
+  }
+
   quantityChanged(item: BasketItem, quantity: number | null): void {
     if (!quantity || quantity < 1) {
-      // Wyczyszczone pole — przeładowanie przywraca faktyczną ilość z koszyka.
-      this.basket.reload();
       return;
     }
-    this.basketService.updateBasket([{productId: item.product.id, quantity}]).subscribe({
-      next: () => this.basket.reload(),
-      error: () => this.notification.error('common.error', 'toast.basketUpdateError'),
-    });
+    this.quantityInput.next({productId: item.product.id, quantity});
   }
 
   removeItem(item: BasketItem): void {

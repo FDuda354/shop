@@ -26,6 +26,7 @@
                   </div>
                   <p-inputnumber [ngModel]="item.quantity"
                                  (ngModelChange)="quantityChanged(item, $event)"
+                                 [allowEmpty]="false"
                                  [min]="1"
                                  [max]="99"
                                  [showButtons]="true"
