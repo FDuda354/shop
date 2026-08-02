@@ -1,6 +1,7 @@
 package pl.dudios.shop.basket.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,10 +13,13 @@ import pl.dudios.shop.basket.controller.mapper.BasketMapper;
 import pl.dudios.shop.basket.model.dto.BasketProductDto;
 import pl.dudios.shop.basket.service.BasketService;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@Validated
 @RequestMapping("/basket")
 public class BasketContorller {
 
@@ -27,12 +31,12 @@ public class BasketContorller {
     }
 
     @PutMapping("/{id}")
-    public BasketSummaryDto addProductToBasket(@PathVariable Long id, @RequestBody BasketProductDto basketProductDto) {
+    public BasketSummaryDto addProductToBasket(@PathVariable Long id, @RequestBody @Valid BasketProductDto basketProductDto) {
         return BasketMapper.mapToBasketSummaryDto(basketService.addProductToBasket(id, basketProductDto));
     }
 
     @PutMapping("/{id}/update")
-    public BasketSummaryDto updateBasket(@PathVariable Long id, @RequestBody List<BasketProductDto> basketProductDtos) {
+    public BasketSummaryDto updateBasket(@PathVariable Long id, @RequestBody List<@NotNull @Valid BasketProductDto> basketProductDtos) {
         return BasketMapper.mapToBasketSummaryDto(basketService.updateBasket(id, basketProductDtos));
     }
 

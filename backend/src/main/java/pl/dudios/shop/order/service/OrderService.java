@@ -41,7 +41,7 @@ public class OrderService {
 
     @Transactional
     public OrderSummary createOrder(OrderDto orderDto, Long userId) {
-        Basket basket = basketRepo.findById(orderDto.basketId()).orElseThrow();
+        Basket basket = basketRepo.findByIdForUpdate(orderDto.basketId()).orElseThrow();
         Shipment shipment = shipmentRepo.findById(orderDto.shipmentId()).orElseThrow();
         Payment payment = paymentRepo.findById(orderDto.paymentId()).orElseThrow();
         Order newOrder = orderRepo.save(createNewOrder(orderDto, basket, shipment, payment, userId));

@@ -25,7 +25,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/products")
-    public Page<ProductDto> getProducts(@PageableDefault(size = 5) Pageable pageable) {
+    public Page<ProductDto> getProducts(@PageableDefault(size = 5, sort = "id") Pageable pageable) {
         Page<Product> pageOfProducts = productService.getProducts(pageable);
         List<ProductDto> productsDto = pageOfProducts.getContent().stream()
                 .map(product ->

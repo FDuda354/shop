@@ -21,7 +21,10 @@ export class ContentLoaderComponent<T> {
 
   readonly isLoading: Signal<boolean> = computed(() => {
     const status = this.data().status();
-    return status === 'loading' || status === 'reloading' || status === 'idle';
+    if (status === 'reloading') {
+      return !this.data().hasValue();
+    }
+    return status === 'loading' || status === 'idle';
   });
 
   readonly readyData: Signal<any | null> = computed(() => {

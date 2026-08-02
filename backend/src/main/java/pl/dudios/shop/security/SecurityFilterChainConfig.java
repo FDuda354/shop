@@ -57,6 +57,7 @@ public class SecurityFilterChainConfig {
                         .requestMatchers("/actuator/health/**", "/actuator/health").permitAll()
                         .requestMatchers("/actuator/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/profile/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/orders").authenticated()
                         // Sklep jest publiczny: produkty, kategorie, koszyk,
                         // składanie zamówień i recenzje działają anonimowo.

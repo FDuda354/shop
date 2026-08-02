@@ -3,8 +3,8 @@ package pl.dudios.shop.admin.product.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.CacheControl;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +40,7 @@ public class AdminProductController {
     private final AdminProductImageService adminProductImageService;
 
     @GetMapping("/admin/products")
-    public Page<AdminProduct> getProducts(Pageable pageable) {
+    public Page<AdminProduct> getProducts(@PageableDefault(sort = "id") Pageable pageable) {
         return adminProductService.getProducts(pageable);
     }
 
@@ -66,18 +66,15 @@ public class AdminProductController {
 
     @PostMapping("/admin/product/upload-image")
     public UploadResponse uploadImage(@RequestParam("file") MultipartFile file) {
-        try {
-            InputStream inputStream = file.getInputStream();
-            String savedFileName = adminProductImageService.uploadImage(file.getOriginalFilename(), inputStream);
-            return new UploadResponse(savedFileName);
-        } catch (IOException e) {
-            throw new RuntimeException("Error while saving file " + e.getMessage());
-        }
-
+        return storeImage(file);
     }
 
     @PostMapping("/profile/upload-image")
     public UploadResponse uploadProfileImage(@RequestParam("file") MultipartFile file) {
+        return storeImage(file);
+    }
+
+    private UploadResponse storeImage(MultipartFile file) {
         try {
             InputStream inputStream = file.getInputStream();
             String savedFileName = adminProductImageService.uploadImage(file.getOriginalFilename(), inputStream);
@@ -85,14 +82,13 @@ public class AdminProductController {
         } catch (IOException e) {
             throw new RuntimeException("Error while saving file " + e.getMessage());
         }
-
     }
 
     @GetMapping({"/data/productImage/{fileName}", "/data/productImages/{fileName}"})
     public ResponseEntity<byte[]> serveFiles(@PathVariable String fileName) {
         ProductImage image = adminProductImageService.getImage(fileName);
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(image.getContentType()))
+                .contentType(adminProductImageService.servableContentType(image))
                 // Kolizje nazw dostają sufiks "-N", więc treść pod daną nazwą
                 // się nie zmienia — można cache'ować agresywnie.
                 .cacheControl(CacheControl.maxAge(Duration.ofDays(30)).cachePublic().immutable())

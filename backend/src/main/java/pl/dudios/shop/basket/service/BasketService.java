@@ -37,21 +37,18 @@ public class BasketService {
                 .build());
     }
 
-    //TODO: Upgrade this 1
     private Basket getInitializedBasket(Long id) {
         if (id == null || id <= 0) {
-            return basketRepo.save(Basket.builder()
-                    .created(LocalDateTime.now())
-                    .build());
+            return createEmptyBasket();
         }
-        try {
-            return basketRepo.findById(id).orElseThrow();
-        } catch (Exception e) {
-            return basketRepo.save(Basket.builder()
-                    .created(LocalDateTime.now())
-                    .items(new ArrayList<>())
-                    .build());
-        }
+        return basketRepo.findByIdForUpdate(id).orElseGet(this::createEmptyBasket);
+    }
+
+    private Basket createEmptyBasket() {
+        return basketRepo.save(Basket.builder()
+                .created(LocalDateTime.now())
+                .items(new ArrayList<>())
+                .build());
     }
 
     private Product getProduct(Long productId) {
@@ -60,7 +57,7 @@ public class BasketService {
 
     @Transactional
     public Basket updateBasket(Long id, List<BasketProductDto> basketProductDtos) {
-        Basket basket = basketRepo.findById(id).orElseThrow();
+        Basket basket = basketRepo.findByIdForUpdate(id).orElseThrow();
         basket.getItems().forEach(basketItem -> {
             basketProductDtos.stream()
                     .filter(basketProductDto -> basketProductDto.productId().equals(basketItem.getProduct().getId()))

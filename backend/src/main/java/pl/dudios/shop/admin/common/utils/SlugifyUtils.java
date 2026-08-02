@@ -3,6 +3,8 @@ package pl.dudios.shop.admin.common.utils;
 import com.github.slugify.Slugify;
 import org.apache.commons.io.FilenameUtils;
 
+import java.util.Locale;
+
 public class SlugifyUtils {
 
     private SlugifyUtils() {
@@ -14,7 +16,7 @@ public class SlugifyUtils {
 
     public static String slugifyFileName(String fileName) {
         String name = FilenameUtils.getBaseName(fileName);
-        return SLUGIFY.slugify(name) + "." + FilenameUtils.getExtension(fileName);
+        return SLUGIFY.slugify(name) + "." + FilenameUtils.getExtension(fileName).toLowerCase(Locale.ROOT);
     }
 
     public static String slugifySlug(String slug) {

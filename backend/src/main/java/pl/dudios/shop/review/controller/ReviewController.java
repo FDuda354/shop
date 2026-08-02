@@ -3,6 +3,7 @@ package pl.dudios.shop.review.controller;
 import lombok.AllArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,8 +44,15 @@ public class ReviewController {
     }
 
     @DeleteMapping("/review/{id}")
-    public void deleteReview(@PathVariable Long id) {
-        reviewService.deleteReview(id);
+    public void deleteReview(@PathVariable Long id, @AuthenticationPrincipal AppUserDetails user) {
+        reviewService.deleteReview(id, requireUserId(user));
+    }
+
+    private static Long requireUserId(AppUserDetails user) {
+        if (user == null) {
+            throw new AccessDeniedException("Only the review author can delete it");
+        }
+        return user.getId();
     }
 
     private String cleanContent(String text) {

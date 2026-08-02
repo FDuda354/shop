@@ -3,6 +3,7 @@ package pl.dudios.shop.category.controller;
 import lombok.AllArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,7 @@ public class CategoryController {
             @PathVariable
             @Pattern(regexp = "[a-z0-9\\-]+")
             @Length(min = 3, max = 255)
-            String slug, Pageable pageable) {
+            String slug, @PageableDefault(sort = "id") Pageable pageable) {
         return categoryService.getCategoryWithProducts(slug, pageable);
     }
 

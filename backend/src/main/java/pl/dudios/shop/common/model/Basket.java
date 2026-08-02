@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Basket {
     private LocalDateTime created;
     @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "basketId")
+    @OrderBy("id ASC")
     private List<BasketItem> items;
 
     //TODO: Upgrade this 1

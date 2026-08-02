@@ -1,6 +1,7 @@
 package pl.dudios.shop.review.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import pl.dudios.shop.common.model.Review;
 import pl.dudios.shop.review.repository.ReviewRepo;
@@ -21,7 +22,11 @@ public class ReviewService {
         return reviewRepo.findALLByUserId(userId);
     }
 
-    public void deleteReview(Long id) {
-        reviewRepo.deleteById(id);
+    public void deleteReview(Long id, Long userId) {
+        Review review = reviewRepo.findById(id).orElseThrow();
+        if (!userId.equals(review.getUserId())) {
+            throw new AccessDeniedException("Only the review author can delete it");
+        }
+        reviewRepo.delete(review);
     }
 }

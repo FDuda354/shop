@@ -1,6 +1,6 @@
 import {computed, inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable, tap} from 'rxjs';
+import {finalize, Observable, shareReplay, switchMap, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {BasketProductRequest, BasketSummary} from '../models/basket';
 
@@ -28,6 +28,8 @@ export class BasketService {
   readonly itemCount = this._itemCount.asReadonly();
   readonly hasItems = computed(() => this._itemCount() > 0);
 
+  private basketCreation?: Observable<BasketSummary>;
+
   getBasket(id: number): Observable<BasketSummary> {
     return this.http.get<BasketSummary>(this.baseUrl + `/basket/${id}`).pipe(
       tap(basket => this.syncState(basket))
@@ -35,6 +37,20 @@ export class BasketService {
   }
 
   addProduct(request: BasketProductRequest): Observable<BasketSummary> {
+    if (this._basketId() > 0) {
+      return this.putProduct(request);
+    }
+    if (this.basketCreation) {
+      return this.basketCreation.pipe(switchMap(() => this.putProduct(request)));
+    }
+    this.basketCreation = this.putProduct(request).pipe(
+      finalize(() => this.basketCreation = undefined),
+      shareReplay({bufferSize: 1, refCount: false}),
+    );
+    return this.basketCreation;
+  }
+
+  private putProduct(request: BasketProductRequest): Observable<BasketSummary> {
     return this.http.put<BasketSummary>(this.baseUrl + `/basket/${this._basketId()}`, request).pipe(
       tap(basket => this.syncState(basket))
     );
